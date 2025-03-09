@@ -15,7 +15,8 @@
     "objectMetadataList" : [
       [
         "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
-        "Root"
+        "Root",
+        "TankRoot"
       ],
       {
         "isExpanded" : true,
@@ -26,16 +27,6 @@
         "Root",
         "TankRoot",
         "WheelsRight"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
-        "Root",
-        "TankRoot",
-        "Body"
       ],
       {
         "isExpanded" : true,
@@ -63,8 +54,17 @@
       },
       [
         "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
         "Root",
-        "TankRoot"
+        "TankRoot",
+        "Body"
       ],
       {
         "isExpanded" : true,
@@ -77,19 +77,10 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
-        "Platform",
-        "Cylinder"
+        "Wheels",
+        "Roadwheel"
       ],
       {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root"
-      ],
-      {
-        "disallowsFraming" : false,
         "isExpanded" : true,
         "isLocked" : false
       },
@@ -128,28 +119,7 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
-        "Tank",
-        "WheelsRight",
-        "Wheel"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
         "EnvironmentRoot"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "Video_Dock",
-        "Ground"
       ],
       {
         "isExpanded" : true,
@@ -167,6 +137,53 @@
       },
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "SkyDome"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank",
+        "TankRoot",
+        "Body"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank",
+        "TankRoot",
+        "Cannon"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
         "Platform"
       ],
@@ -178,7 +195,43 @@
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
         "EnvironmentRoot",
-        "Ground"
+        "Playfield"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank",
+        "TankRoot"
       ],
       {
         "isExpanded" : true,
@@ -197,8 +250,57 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
-        "Wheels",
-        "Roadwheel"
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank",
+        "TankRoot",
+        "WheelsLeft"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "Video_Dock",
+        "Ground"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "Tank",
+        "WheelsRight",
+        "Wheel"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "DirtGround",
+        "Tank",
+        "TankRoot",
+        "WheelsRight"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "Platform",
+        "Cylinder"
       ],
       {
         "isExpanded" : true,

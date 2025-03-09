@@ -10,6 +10,8 @@ import RealityKit
 import RealityKitContent
 
 struct ImmersiveView: View {
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.openWindow) var openWindow
     @Environment(AppModel.self) var appModel
 
     var body: some View {
@@ -17,6 +19,13 @@ struct ImmersiveView: View {
             // Add the initial RealityKit content
             if let immersiveContentEntity = try? await Entity(named: "Immersive", in: realityKitContentBundle) {
                 content.add(immersiveContentEntity)
+            }
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            switch newPhase {
+            case .active:
+                openWindow(id: appModel.tankControlsPanelID)
+            default: break
             }
         }
     }
