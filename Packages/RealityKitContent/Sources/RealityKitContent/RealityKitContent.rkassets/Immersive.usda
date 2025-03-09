@@ -7,12 +7,12 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["SkyDome", "EnvironmentRoot", "DirectionalLight", "Platform"]
+    reorder nameChildren = ["EnvironmentRoot", "Platform", "Ground"]
     def Xform "EnvironmentRoot" (
         active = true
     )
     {
-        reorder nameChildren = ["Playfield", "Tank", "DirectionalLight", "SkyDome"]
+        reorder nameChildren = ["Playfield", "DirectionalLight", "SkyDome", "Ground"]
         float3 xformOp:translate = (0, -3, -8)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -107,6 +107,7 @@ def Xform "Root"
             references = @SkyDome.usdz@
         )
         {
+            reorder nameChildren = ["Dome_01", "Ground_01", "Grid", "mtl", "Ground", "Ground"]
             quatf xformOp:orient = (1, 0, 0, 0)
             float3 xformOp:scale = (0.02, 0.02, 0.02)
             float3 xformOp:translate = (0, 0, 0)
@@ -131,6 +132,42 @@ def Xform "Root"
                     token outputs:mtlx:surface
                     token outputs:realitykit:vertex
                 }
+            }
+
+            over "Ground_01" (
+                active = false
+            )
+            {
+            }
+
+            over "Grid"
+            {
+            }
+        }
+
+        def Cube "Ground" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Root/EnvironmentRoot/Ground/BrownMerinoWool> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 10
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (5, 0.01, 5)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def "BrownMerinoWool" (
+                active = true
+                references = @BrownMerinoWool.usdz@
+            )
+            {
+                color3f inputs:Basecolor_Tint = (0.014721276, 0.1660559, 0.004488263) (
+                    colorSpace = "srgb_displayp3"
+                )
+                float2 inputs:UV_Scale = (5, 5)
             }
         }
     }
