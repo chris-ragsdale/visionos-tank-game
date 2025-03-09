@@ -14,33 +14,31 @@ struct ToggleLevelButton: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(AppModel.self) private var appModel
     
-    var levelName: String
-
+    var level: Level
+    
     var body: some View {
-        Group {
-            if appModel.immersiveSpaceState == .open {
-                // Pause Level Button
-                Button("Pause", action: handlePause)
-            } else {
-                // Play Level Button
-                Button(levelName, action: handleStartTutorial)
-            }
+        if appModel.immersiveSpaceState == .open {
+            // Pause Level Button
+            Button("Pause", action: {
+                appModel.setSelectedLevel(nil)
+                dismissWindow(id: appModel.tankControlsPanelID)
+                toggleImmersiveSpace()
+            })
+        } else {
+            // Play Level Button
+            NavigationLink(value: level.id, label: {
+                Button(level.name, action: {
+                    appModel.setSelectedLevel(level.id)
+                    openWindow(id: appModel.tankControlsPanelID)
+                    toggleImmersiveSpace()
+                })
+            })
+            .buttonStyle(.plain)
         }
-        .disabled(appModel.immersiveSpaceState == .inTransition)
-        .animation(.none, value: 0)
-        .fontWeight(.semibold)
     }
-    
-    func handlePause() {
-        dismissWindow(id: appModel.tankControlsPanelID)
-        toggleImmersiveSpace()
-    }
-    
-    func handleStartTutorial() {
-        openWindow(id: appModel.tankControlsPanelID)
-        toggleImmersiveSpace()
-    }
-    
+}
+
+extension ToggleLevelButton {
     func toggleImmersiveSpace() {
         Task { @MainActor in
             switch appModel.immersiveSpaceState {

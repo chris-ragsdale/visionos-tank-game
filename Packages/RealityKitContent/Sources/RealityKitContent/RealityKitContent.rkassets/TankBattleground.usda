@@ -13,7 +13,7 @@ def Xform "Root"
     )
     {
         reorder nameChildren = ["Playfield", "DirectionalLight", "SkyDome", "Ground"]
-        float3 xformOp:translate = (0, -3, -8)
+        float3 xformOp:translate = (0, -2, -8)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def Cube "Playfield" (
@@ -36,7 +36,7 @@ def Xform "Root"
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
-                reorder nameChildren = ["Natural_Cork", "Tank"]
+                reorder nameChildren = ["Tank", "Natural_Cork", "TankOld"]
                 rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Natural_Cork> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
@@ -63,124 +63,12 @@ def Xform "Root"
 
                 def "Tank" (
                     active = true
-                    references = @Tank/Tank.usda@
+                    prepend references = @Tank/Tank.usda@
                 )
                 {
-                    quatf xformOp:orient = (1, 0, 0, 0)
-                    float3 xformOp:scale = (0.08888889, 5.3333335, 0.08888889)
-                    float3 xformOp:translate = (0, 0.5, 5.9604645e-8)
+                    float3 xformOp:scale = (0.089, 5.333, 0.089)
+                    float3 xformOp:translate = (0, 0.5, 0)
                     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-                    over "TankRoot"
-                    {
-                        over "Cannon"
-                        {
-                            reorder nameChildren = ["ScratchedMetallicPaint", "Base", "Shaft", "End", "CannonPaint"]
-                            over "CannonPaint" (
-                                active = false
-                            )
-                            {
-                            }
-
-                            def "ScratchedMetallicPaint" (
-                                active = true
-                                references = @ScratchedMetallicPaint.usdz@
-                            )
-                            {
-                                color3f inputs:Basecolor_Tint = (0, 0.012942096, 0.66982037) (
-                                    colorSpace = "srgb_displayp3"
-                                )
-                            }
-
-                            over "Base" (
-                                prepend apiSchemas = ["MaterialBindingAPI"]
-                            )
-                            {
-                                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/Cannon/ScratchedMetallicPaint> (
-                                    bindMaterialAs = "weakerThanDescendants"
-                                )
-                            }
-
-                            over "Shaft" (
-                                prepend apiSchemas = ["MaterialBindingAPI"]
-                            )
-                            {
-                                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/Cannon/ScratchedMetallicPaint> (
-                                    bindMaterialAs = "weakerThanDescendants"
-                                )
-                            }
-
-                            over "End" (
-                                prepend apiSchemas = ["MaterialBindingAPI"]
-                            )
-                            {
-                                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/Cannon/ScratchedMetallicPaint> (
-                                    bindMaterialAs = "weakerThanDescendants"
-                                )
-                            }
-                        }
-
-                        over "WheelsRight"
-                        {
-                            reorder nameChildren = ["ScratchedMetallicPaint", "Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "RoadwheelPaint"]
-                            over "RoadwheelPaint" (
-                                active = false
-                            )
-                            {
-                            }
-
-                            def "ScratchedMetallicPaint" (
-                                active = true
-                                references = @ScratchedMetallicPaint.usdz@
-                            )
-                            {
-                                color3f inputs:Basecolor_Tint = (0.26881313, 0.28347772, 0.2862234) (
-                                    colorSpace = "srgb_displayp3"
-                                )
-                            }
-
-                            over "Roadwheel" (
-                                prepend apiSchemas = ["MaterialBindingAPI"]
-                            )
-                            {
-                                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/WheelsRight/ScratchedMetallicPaint> (
-                                    bindMaterialAs = "weakerThanDescendants"
-                                )
-                            }
-                        }
-
-                        over "WheelsLeft"
-                        {
-                            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "RoadwheelPaint", "ScratchedMetallicPaint"]
-                            over "RoadwheelPaint" (
-                                active = false
-                            )
-                            {
-                            }
-
-                            def "ScratchedMetallicPaint" (
-                                active = true
-                                references = @ScratchedMetallicPaint.usdz@
-                            )
-                            {
-                                color3f inputs:Basecolor_Tint = (0.26881313, 0.28347772, 0.2862234) (
-                                    colorSpace = "srgb_displayp3"
-                                )
-                                token outputs:mtlx:surface.connect = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/WheelsLeft/ScratchedMetallicPaint/PreviewSurface.outputs:out>
-                                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                                int ui:nodegraph:node:stackingOrder = 1
-                            }
-
-                            over "Roadwheel" (
-                                prepend apiSchemas = ["MaterialBindingAPI"]
-                            )
-                            {
-                                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Tank/TankRoot/WheelsLeft/ScratchedMetallicPaint> (
-                                    bindMaterialAs = "weakerThanDescendants"
-                                )
-                            }
-                        }
-                    }
                 }
             }
 

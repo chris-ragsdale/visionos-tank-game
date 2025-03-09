@@ -13,9 +13,13 @@ def Xform "Root"
     reorder nameChildren = ["Tank", "TankRoot"]
     def Xform "TankRoot" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, -1.5707963, 0)
+        }
     )
     {
-        quatf xformOp:orient = (1, 0, 0, 0)
+        reorder nameChildren = ["Cannon", "ScratchedMetallicPaint", "Body", "WheelsRight", "WheelsLeft"]
+        quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
         float3 xformOp:scale = (1.0000001, 1, 1.0000001)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
@@ -24,7 +28,7 @@ def Xform "Root"
             active = true
         )
         {
-            reorder nameChildren = ["Base", "Shaft", "End", "CannonPaint"]
+            reorder nameChildren = ["Base", "Shaft", "End", "ScratchedMetallicPaint"]
             quatf xformOp:orient = (1, 0, 0, 0)
             float3 xformOp:scale = (1, 1, 1)
             float3 xformOp:translate = (0, 0.2, 0)
@@ -35,7 +39,7 @@ def Xform "Root"
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
-                rel material:binding = </Root/TankRoot/Cannon/CannonPaint> (
+                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double size = 0.1
@@ -50,7 +54,7 @@ def Xform "Root"
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
-                rel material:binding = </Root/TankRoot/Cannon/CannonPaint> (
+                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double size = 0.1
@@ -67,7 +71,7 @@ def Xform "Root"
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
-                rel material:binding = </Root/TankRoot/Cannon/CannonPaint> (
+                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double size = 0.1
@@ -79,21 +83,14 @@ def Xform "Root"
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
 
-            def "CannonPaint" (
+            def "ScratchedMetallicPaint" (
                 active = true
                 references = @../ScratchedMetallicPaint.usdz@
             )
             {
-                color3f inputs:Basecolor_Tint = (0, 0.015380035, 0.4745087) (
+                color3f inputs:Basecolor_Tint = (0.024134954, 0, 0.66982037) (
                     colorSpace = "srgb_displayp3"
                 )
-                token outputs:mtlx:surface.connect = None
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
         }
 
@@ -140,7 +137,7 @@ def Xform "Root"
             active = true
         )
         {
-            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "RoadwheelPaint"]
+            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "ScratchedMetallicPaint"]
             quatf xformOp:orient = (1, 0, 0, 0)
             float3 xformOp:scale = (1, 1, 1)
             float3 xformOp:translate = (0, 0.05, 0)
@@ -156,7 +153,7 @@ def Xform "Root"
             {
                 uniform token axis = "Y"
                 double height = 0.2
-                rel material:binding = </Root/TankRoot/WheelsRight/RoadwheelPaint> (
+                rel material:binding = </Root/TankRoot/WheelsRight/ScratchedMetallicPaint> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double radius = 0.1
@@ -186,23 +183,6 @@ def Xform "Root"
                 references = @../BlackABSPlastic.usdz@
             )
             {
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def "RoadwheelPaint" (
-                active = true
-                references = @../ScratchedMetallicPaint.usdz@
-            )
-            {
-                color3f inputs:Basecolor_Tint = (0.5502963, 0.5803167, 0.5859375) (
-                    colorSpace = "srgb_displayp3"
-                )
-                token outputs:mtlx:surface.connect = None
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0, 0)
@@ -259,13 +239,23 @@ def Xform "Root"
                 float3 xformOp:translate = (-0.2, 0, 0.2)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
+
+            def "ScratchedMetallicPaint" (
+                active = true
+                references = @../ScratchedMetallicPaint.usdz@
+            )
+            {
+                color3f inputs:Basecolor_Tint = (0.25230423, 0.26606822, 0.2686453) (
+                    colorSpace = "srgb_displayp3"
+                )
+            }
         }
 
         def Xform "WheelsLeft" (
             active = true
         )
         {
-            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "RoadwheelPaint"]
+            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "ScratchedMetallicPaint"]
             float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
             int ui:nodegraph:node:stackingOrder = 1
             quatf xformOp:orient = (1, 0, 0, 0)
@@ -283,7 +273,7 @@ def Xform "Root"
             {
                 uniform token axis = "Y"
                 double height = 0.2
-                rel material:binding = </Root/TankRoot/WheelsLeft/RoadwheelPaint> (
+                rel material:binding = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double radius = 0.1
@@ -313,23 +303,6 @@ def Xform "Root"
                 references = @../BlackABSPlastic.usdz@
             )
             {
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def "RoadwheelPaint" (
-                active = true
-                references = @../ScratchedMetallicPaint.usdz@
-            )
-            {
-                color3f inputs:Basecolor_Tint = (0.5502963, 0.5803167, 0.5859375) (
-                    colorSpace = "srgb_displayp3"
-                )
-                token outputs:mtlx:surface.connect = None
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0, 0)
@@ -385,6 +358,19 @@ def Xform "Root"
                 float3 xformOp:scale = (0.6, 0.6, 0.6)
                 float3 xformOp:translate = (-0.2, 0, 0.2)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+
+            def "ScratchedMetallicPaint" (
+                active = true
+                references = @../ScratchedMetallicPaint.usdz@
+            )
+            {
+                color3f inputs:Basecolor_Tint = (0.25230423, 0.26606822, 0.2686453) (
+                    colorSpace = "srgb_displayp3"
+                )
+                token outputs:mtlx:surface.connect = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint/PreviewSurface.outputs:out>
+                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
+                int ui:nodegraph:node:stackingOrder = 1
             }
         }
     }

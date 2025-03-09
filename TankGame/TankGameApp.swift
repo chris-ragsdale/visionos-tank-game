@@ -26,10 +26,10 @@ struct TankGameApp: App {
         }
         .windowResizability(.contentSize)
         
-        // MARK: - Immersive View
+        // MARK: - Tank Battleground Full Space
 
         ImmersiveSpace(id: appModel.immersiveSpaceID) {
-            ImmersiveView()
+            TankBattlegroundFullSpace()
                 .environment(appModel)
                 .onAppear {
                     appModel.immersiveSpaceState = .open
@@ -46,8 +46,8 @@ struct TankGameApp: App {
             TankControlsPanel()
                 .environment(appModel)
                 .frame(
-                    minWidth: 400, maxWidth: 400,
-                    minHeight: 400, maxHeight: 400
+                    minWidth: 500, maxWidth: 500,
+                    minHeight: 500, maxHeight: 500
                 )
         }
         .windowResizability(.contentSize)
