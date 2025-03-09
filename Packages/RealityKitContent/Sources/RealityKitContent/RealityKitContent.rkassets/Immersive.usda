@@ -1,0 +1,173 @@
+#usda 1.0
+(
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    reorder nameChildren = ["SkyDome", "EnvironmentRoot", "DirectionalLight", "Platform"]
+    def Xform "EnvironmentRoot" (
+        active = true
+    )
+    {
+        reorder nameChildren = ["Playfield", "Tank", "DirectionalLight", "SkyDome"]
+        float3 xformOp:translate = (0, -3, -8)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Cube "Playfield" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            reorder nameChildren = ["SmoothConcrete", "DirtGround", "Tank"]
+            rel material:binding = </Root/EnvironmentRoot/Playfield/SmoothConcrete> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double size = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (12.5, 0.20833334, 12.5)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def Cube "DirtGround" (
+                active = true
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                reorder nameChildren = ["Natural_Cork", "Tank"]
+                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Natural_Cork> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                double size = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (0.9, 0.9, 0.9)
+                float3 xformOp:translate = (0, 0.25, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def "Natural_Cork" (
+                    active = true
+                    references = @NaturalCork.usdz@
+                )
+                {
+                    color3f inputs:Basecolor_Tint = (0.25249678, 0.19549683, 0.13471305) (
+                        colorSpace = "srgb_displayp3"
+                    )
+                    float2 inputs:UV_Scale = (10, 10)
+                    quatf xformOp:orient = (1, 0, 0, 0)
+                    float3 xformOp:scale = (1, 1, 1)
+                    float3 xformOp:translate = (0, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def "Tank" (
+                    active = true
+                    references = @Tank/Tank.usda@
+                )
+                {
+                    quatf xformOp:orient = (1, 0, 0, 0)
+                    float3 xformOp:scale = (0.08888889, 5.3333335, 0.08888889)
+                    float3 xformOp:translate = (0, 0.5, 5.9604645e-8)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+            }
+
+            def "SmoothConcrete" (
+                active = true
+                references = @SmoothConcrete.usdz@
+            )
+            {
+            }
+        }
+
+        def Xform "DirectionalLight" (
+            customData = {
+                float3 rotationEulerHint = (-1.2128584, -1.3428334e-8, 4.7608093e-8)
+            }
+        )
+        {
+            quatf xformOp:orient = (0.82168835, -0.569937, -1.9083759e-8, 1.5732855e-8)
+            float3 xformOp:scale = (0.99999994, 0.99999994, 0.99999994)
+            float3 xformOp:translate = (0, 9.27021, 3)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "DirectionalLight"
+            {
+                token info:id = "RealityKit.DirectionalLight"
+
+                def RealityKitStruct "Shadow"
+                {
+                }
+            }
+        }
+
+        def "SkyDome" (
+            active = true
+            references = @SkyDome.usdz@
+        )
+        {
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (0.02, 0.02, 0.02)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "mtl"
+            {
+                over "DomeMATSG"
+                {
+                    token outputs:mtlx:surface
+                    token outputs:realitykit:vertex
+                }
+
+                over "GridMATSG"
+                {
+                    token outputs:mtlx:surface
+                    token outputs:realitykit:vertex
+                }
+
+                over "GroundMATSG"
+                {
+                    token outputs:mtlx:surface
+                    token outputs:realitykit:vertex
+                }
+            }
+        }
+    }
+
+    def Xform "Platform" (
+        active = true
+    )
+    {
+        def Cylinder "Cylinder" (
+            active = true
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            uniform token axis = "Y"
+            double height = 0.5
+            rel material:binding = </Root/Platform/SmoothConcrete> (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            double radius = 0.75
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            float3 xformOp:translate = (0, 0.25, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def "SmoothConcrete" (
+            active = true
+            references = @SmoothConcrete.usdz@
+        )
+        {
+            color3f inputs:Basecolor_Tint = (0.364288, 0.3015893, 0.13340391) (
+                colorSpace = "srgb_displayp3"
+            )
+            token outputs:mtlx:surface.connect = </Root/Platform/SmoothConcrete/PreviewSurface.outputs:out>
+            float2 ui:nodegraph:node:pos = (32.36331, 544.47974)
+            int ui:nodegraph:node:stackingOrder = 1
+        }
+    }
+}
+
