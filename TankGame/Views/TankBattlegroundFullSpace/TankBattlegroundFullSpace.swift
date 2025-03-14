@@ -15,17 +15,27 @@ struct TankBattlegroundFullSpace: View {
     @Environment(AppModel.self) var appModel
     
     @State var model = TankBattlegroundViewModel()
+    
+    init() {
+        TankMovementSystem.registerSystem()
+    }
 
     var body: some View {
         RealityView { content in
-            if let (tank, environmentRoot) = await model.initBattleground(content: content) {
-                appModel.tankEntity = tank
-                appModel.environmentRoot = environmentRoot
-            }
+            guard let (tank, environmentRoot) = await model.initBattleground(content: content) else { return }
+            appModel.tankEntity = tank
+            appModel.environmentRoot = environmentRoot
         }
+        .gesture(
+            SpatialTapGesture()
+                .targetedToAnyEntity()
+                .onEnded { event in
+                    model.handlePlayfieldTap(event, appModel)
+                }
+        )
         .onChange(of: appModel.tankCommands) { oldCommands, newCommands in
             guard let command = newCommands.last else { return }
-            model.commandTank(command, appModel.tankEntity)
+            model.handleNextTankCommand(command, appModel.tankEntity)
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             switch newPhase {

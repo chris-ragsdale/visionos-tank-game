@@ -30,23 +30,32 @@ struct TankControlsPanel: View {
             
             Spacer()
             
-            // Touchpad
-            Text("\(Image(systemName: "move.3d")) Move")
-            RoundedRectangle(cornerRadius: 25)
-                .fill(.gray.opacity(0.4))
-                .frame(width: 300, height: 300)
-                .gesture (
-                    DragGesture()
-                        .onChanged { value in
-                            guard dragging == false else { return }
-                            dragging = true
-                            moveTank(dragValue: value)
-                        }
-                        .onEnded { value in
-                            dragging = false
-                        }
-                )
-                .hoverEffect()
+            // Tank Command
+            Text("\(Image(systemName: "switch.2")) Tank Command")
+            Picker("Tank Command", selection: $appModel.selectedTankCommand) {
+                Text("move").tag(TankCommandType.move)
+                Text("shoot").tag(TankCommandType.shoot)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 300)
+            
+//            // Touchpad
+//            Text("\(Image(systemName: "move.3d")) Move")
+//            RoundedRectangle(cornerRadius: 25)
+//                .fill(.gray.opacity(0.4))
+//                .frame(width: 300, height: 300)
+//                .gesture (
+//                    DragGesture()
+//                        .onChanged { value in
+//                            guard dragging == false else { return }
+//                            dragging = true
+////                            moveTank(dragValue: value)
+//                        }
+//                        .onEnded { value in
+//                            dragging = false
+//                        }
+//                )
+//                .hoverEffect()
             
             Spacer()
         }
@@ -63,8 +72,8 @@ struct TankControlsPanel: View {
         }
     }
     
-    func moveTank(dragValue: DragGesture.Value) {
-        let command = TankCommand(commandType: .move, target: .zero)
-        appModel.tankCommands.append(command)
-    }
+//    func moveTank(dragValue: DragGesture.Value) {
+//        let command = TankCommand(commandType: .move, target: .zero)
+//        appModel.tankCommands.append(command)
+//    }
 }

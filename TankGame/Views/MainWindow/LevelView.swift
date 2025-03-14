@@ -17,10 +17,14 @@ struct LevelView: View {
     
     var body: some View {
         VStack {
-            Text(level.name)
-                .font(.title)
+//            Text(level.name)
+//                .font(.title)
+            
+            Spacer()
             
             Text(level.description)
+            
+            Spacer()
         }
         .navigationTitle(level.name)
     }

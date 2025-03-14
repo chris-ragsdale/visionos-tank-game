@@ -12,8 +12,8 @@ def Xform "Root"
         active = true
     )
     {
-        reorder nameChildren = ["Playfield", "DirectionalLight", "SkyDome", "Ground"]
-        float3 xformOp:translate = (0, -2, -8)
+        reorder nameChildren = ["Playfield", "SkyDome", "Ground", "DirectionalLight_1", "DirectionalLight"]
+        float3 xformOp:translate = (0, -2.5, -8)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def Cube "Playfield" (
@@ -21,7 +21,7 @@ def Xform "Root"
             prepend apiSchemas = ["MaterialBindingAPI"]
         )
         {
-            reorder nameChildren = ["SmoothConcrete", "DirtGround", "Tank"]
+            reorder nameChildren = ["SmoothConcrete", "PlayfieldGround", "Tank", "DirectionalLight_1"]
             rel material:binding = </Root/EnvironmentRoot/Playfield/SmoothConcrete> (
                 bindMaterialAs = "weakerThanDescendants"
             )
@@ -31,13 +31,13 @@ def Xform "Root"
             float3 xformOp:translate = (0, 0, 0)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-            def Cube "DirtGround" (
+            def Cube "PlayfieldGround" (
                 active = true
                 prepend apiSchemas = ["MaterialBindingAPI"]
             )
             {
                 reorder nameChildren = ["Tank", "Natural_Cork", "TankOld"]
-                rel material:binding = </Root/EnvironmentRoot/Playfield/DirtGround/Natural_Cork> (
+                rel material:binding = </Root/EnvironmentRoot/Playfield/PlayfieldGround/Natural_Cork> (
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double size = 1
@@ -61,14 +61,29 @@ def Xform "Root"
                     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
                 }
 
-                def "Tank" (
-                    active = true
-                    prepend references = @Tank/Tank.usda@
-                )
+                def RealityKitComponent "Collider"
                 {
-                    float3 xformOp:scale = (0.089, 5.333, 0.089)
-                    float3 xformOp:translate = (0, 0.5, 0)
-                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                    uint group = 1
+                    uniform token info:id = "RealityKit.Collider"
+                    uint mask = 4294967295
+                    token type = "Default"
+
+                    def RealityKitStruct "Shape"
+                    {
+                        float3 extent = (1, 1, 1)
+                        token shapeType = "Box"
+
+                        def RealityKitStruct "pose"
+                        {
+                        }
+                    }
+                }
+
+                def RealityKitComponent "InputTarget"
+                {
+                    bool allowsDirectInput = 0
+                    bool allowsIndirectInput = 1
+                    uniform token info:id = "RealityKit.InputTarget"
                 }
             }
 
@@ -78,22 +93,37 @@ def Xform "Root"
             )
             {
             }
+
+            def "Tank" (
+                active = true
+                customData = {
+                    float3 rotationEulerHint = (0, 0, 0)
+                }
+                references = @Tank/Tank.usda@
+            )
+            {
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (0.0801, 4.7997, 0.0801)
+                float3 xformOp:translate = (0, 0.6999998, 0.4)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
         }
 
         def Xform "DirectionalLight" (
             customData = {
-                float3 rotationEulerHint = (-1.2128584, -1.3428334e-8, 4.7608093e-8)
+                float3 rotationEulerHint = (-2.1816616, 1.4124441e-7, 6.8063075e-9)
             }
         )
         {
-            quatf xformOp:orient = (0.82168835, -0.569937, -1.9083759e-8, 1.5732855e-8)
+            quatf xformOp:orient = (0.46174854, -0.8870108, 2.9591067e-8, 6.421406e-8)
             float3 xformOp:scale = (0.99999994, 0.99999994, 0.99999994)
-            float3 xformOp:translate = (0, 9.27021, 3)
+            float3 xformOp:translate = (0.6229592, 18.812338, 11.757125)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
             def RealityKitComponent "DirectionalLight"
             {
                 token info:id = "RealityKit.DirectionalLight"
+                float intensity = 10000
 
                 def RealityKitStruct "Shadow"
                 {

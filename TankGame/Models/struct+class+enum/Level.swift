@@ -33,6 +33,6 @@ struct Level: Identifiable, Equatable {
     
     let id: ID
     let name: String
-    let description: String
+    let description: LocalizedStringKey
     let completionState: CompletionState = .notStarted
 }

@@ -42,7 +42,7 @@ class AppModel {
         Level(
             id: 0,
             name: "Tutorial",
-            description: "Welcome to Tank Game. This is the tutorial level. Perform the following 2 actions to complete the tutorial: Move the tank forward, shoot the enemy tank"
+            description: "**Welcome to Tank Game**\n\nThis is the tutorial level.\n\nPerform the following 2 actions to complete the tutorial: \n- Move the tank forward\n- shoot the enemy tank"
         ),
         Level(
             id: 1,
@@ -74,6 +74,12 @@ class AppModel {
     // Tank
     var tankEntity = Entity()
     var tankCommands: [TankCommand] = []
+    var selectedTankCommand: TankCommandType = .move
+    
+    func commandTank(target: SIMD3<Float>) {
+        let command = TankCommand(commandType: selectedTankCommand, target: target)
+        tankCommands.append(command)
+    }
     
     // Podium
     var podiumBehavior: PodiumBehavior = .floatMid
@@ -98,7 +104,7 @@ class AppModel {
     }
     
     var environmentRoot: Entity?
-    let lowTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: -0.5, z: -8)
-    let midTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: -2, z: -8)
-    let highTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: -4, z: -8)
+    let lowTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: 0, z: -8)
+    let midTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: -2.5, z: -8)
+    let highTransform: SIMD3<Float> = SIMD3<Float>(x: 0, y: -5, z: -8)
 }
