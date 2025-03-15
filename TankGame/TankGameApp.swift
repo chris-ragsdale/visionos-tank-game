@@ -50,6 +50,7 @@ struct TankGameApp: App {
                     minHeight: 300, maxHeight: 300
                 )
         }
+        .windowStyle(.plain)
         .windowResizability(.contentSize)
         .defaultWindowPlacement { content, context in
             return WindowPlacement(.utilityPanel)

@@ -9,19 +9,17 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-typealias bgEntities = (tank: Entity, environmentRoot: Entity)
-
 @MainActor @Observable
 class TankBattlegroundViewModel {
     let battlegroundBase = Entity()
-    var moveTargetEntity: Entity?
-    var shootTargetEntity: Entity?
-    
     var missileTemplate: Entity?
     var explosionEmitter: Entity?
-    
-    // MARK: - Scene Init
-    
+}
+
+// MARK: - +Init
+
+extension TankBattlegroundViewModel {
+    typealias bgEntities = (tank: Entity, environmentRoot: Entity)
     func initBattleground(content: RealityViewContent) async -> bgEntities? {
         // Load USDAs
         guard let missile = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle),
@@ -48,9 +46,10 @@ class TankBattlegroundViewModel {
         
         return (tank, environmentRoot)
     }
-    
-    // MARK: - Gestures
-    
+}
+
+// MARK: - +Gestures
+extension TankBattlegroundViewModel {
     func handlePlayfieldTap(_ event: EntityTargetValue<SpatialTapGesture.Value>, _ appModel: AppModel) {
         let target = Target(
             posBattleground: event.convert(event.location3D, from: .local, to: .scene),
@@ -63,9 +62,11 @@ class TankBattlegroundViewModel {
             battlegroundBase.addChild(targetEntity, preservingWorldTransform: false)
         }
     }
-    
-    // MARK: - Handle Tank Command
-    
+}
+
+// MARK: - +Tank
+
+extension TankBattlegroundViewModel {
     func handleNextTankCommand(_ command: TankCommand, _ tank: Entity) {
         switch command.commandType {
         case .move:

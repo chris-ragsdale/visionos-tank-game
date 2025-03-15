@@ -34,15 +34,18 @@ struct OverviewCard: View {
                     .font(.title)
                     .padding(.bottom, 15)
                 
-                Text("Control a tank using the control panel in front of you.")
+                Text("Control your tank using the control panel in front of you.")
                     .font(.headline)
                     .padding(.bottom, 10)
                 
                 let bulletPoint = Image(systemName: "smallcircle.filled.circle")
-                Text("\(bulletPoint)   Directly tap the touchpad to move")
+                Text("\(bulletPoint)   Select a tank command")
                     .font(.subheadline)
                     .padding(.leading, 10)
-                Text("\(bulletPoint)   Indirectly tap the battlefield to shoot")
+                Text("\(bulletPoint)   With move selected, tap the battlefield to move")
+                    .font(.subheadline)
+                    .padding(.leading, 10)
+                Text("\(bulletPoint)   With shoot selected, tap the battlefield to shoot")
                     .font(.subheadline)
                     .padding(.leading, 10)
             }
