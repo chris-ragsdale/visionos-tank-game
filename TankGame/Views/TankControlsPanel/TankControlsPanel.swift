@@ -10,16 +10,15 @@ import SwiftUI
 struct TankControlsPanel: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(AppModel.self) var appModel
-    
-    @State var dragging: Bool = false
+    @Environment(GameModel.self) var gameModel
     
     var body: some View {
-        @Bindable var appModel = appModel
+        @Bindable var gameModel = gameModel
         VStack {
             // Podium Controls
             VStack {
                 Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
-                Picker("Podium Behavior", selection: $appModel.podiumBehavior) {
+                Picker("Podium Behavior", selection: $gameModel.podiumBehavior) {
                     Text("low").tag(PodiumBehavior.floatLow)
                     Text("mid").tag(PodiumBehavior.floatMid)
                     Text("high").tag(PodiumBehavior.floatHigh)
@@ -27,8 +26,8 @@ struct TankControlsPanel: View {
                 .pickerStyle(.segmented)
                 .frame(width: 300)
             }
-            .onChange(of: appModel.podiumBehavior) { oldBehavior, newBehavior in
-                appModel.updatePodiumBehavior(newBehavior)
+            .onChange(of: gameModel.podiumBehavior) { oldBehavior, newBehavior in
+                gameModel.updatePodiumBehavior(newBehavior)
             }
             .padding()
             .glassBackgroundEffect()
@@ -38,7 +37,7 @@ struct TankControlsPanel: View {
             // Tank Controls
             VStack {
                 Text("\(Image(systemName: "dot.scope")) Tank Command")
-                Picker("Tank Command", selection: $appModel.selectedCommand) {
+                Picker("Tank Command", selection: $gameModel.selectedCommand) {
                     Text("move").tag(TankCommandType.move)
                     Text("shoot").tag(TankCommandType.shoot)
                 }
@@ -49,7 +48,7 @@ struct TankControlsPanel: View {
                 
                 // Missiles
                 HStack {
-                    let activeMissiles = appModel.shootTargetEntities.count
+                    let activeMissiles = gameModel.shootTargetEntities.count
                     ForEach(0..<5) { missileNum in
                         Image(systemName: "rectangle.portrait.fill")
                             .foregroundStyle(missileNum < activeMissiles ? .gray : .red)

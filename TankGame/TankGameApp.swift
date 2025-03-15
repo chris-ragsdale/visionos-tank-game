@@ -10,7 +10,8 @@ import SwiftUI
 @main
 struct TankGameApp: App {
 
-    @State private var appModel = AppModel.shared
+    @State private var appModel = AppModel()
+    @State private var gameModel = GameModel.shared
 
     var body: some Scene {
         
@@ -31,6 +32,7 @@ struct TankGameApp: App {
         ImmersiveSpace(id: appModel.immersiveSpaceID) {
             TankBattlegroundFullSpace()
                 .environment(appModel)
+                .environment(gameModel)
                 .onAppear {
                     appModel.immersiveSpaceState = .open
                 }
@@ -42,9 +44,10 @@ struct TankGameApp: App {
         
         // MARK: - Tank Controls Panel
         
-        WindowGroup(id: "TankControlsPanel") {
+        WindowGroup(id: appModel.tankControlsPanelID) {
             TankControlsPanel()
                 .environment(appModel)
+                .environment(gameModel)
                 .frame(
                     minWidth: 400, maxWidth: 400,
                     minHeight: 300, maxHeight: 300

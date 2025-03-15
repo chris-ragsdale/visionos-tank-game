@@ -230,7 +230,7 @@ def Xform "Root"
                         double idleDurationVariation = 0
                         bool isLocal = 0
                         bool isSpawningEnabled = 0
-                        bool loops = 1
+                        bool loops = 0
                         float particleSpeed = 0.5
                         float particleSpeedVariation = 0.1
                         float3 shapeSize = (0.4, 0.4, 0.4)

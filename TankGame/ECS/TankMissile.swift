@@ -32,11 +32,11 @@ class TankMissileSystem: System {
             entity.position = newPos
 
             // Stop if close enough to target
-            if simd_distance(newPos, target) < 0.01 {
+            if simd_distance(newPos, target) < 0.015 {
                 entity.components.remove(TankMissileComponent.self)
                 entity.removeFromParent()
                 
-                AppModel.shared.handleMissleHit(missile.commandId)
+                GameModel.shared.handleMissleHit(missile.commandId)
             }
         }
     }
