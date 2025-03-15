@@ -39,23 +39,18 @@ struct TankControlsPanel: View {
             .pickerStyle(.segmented)
             .frame(width: 300)
             
-//            // Touchpad
-//            Text("\(Image(systemName: "move.3d")) Move")
-//            RoundedRectangle(cornerRadius: 25)
-//                .fill(.gray.opacity(0.4))
-//                .frame(width: 300, height: 300)
-//                .gesture (
-//                    DragGesture()
-//                        .onChanged { value in
-//                            guard dragging == false else { return }
-//                            dragging = true
-//                            // appModel.commandTank()
-//                        }
-//                        .onEnded { value in
-//                            dragging = false
-//                        }
-//                )
-//                .hoverEffect()
+            Spacer()
+            
+            // Missiles
+            Text("\(Image(systemName: "flame")) Missiles")
+            HStack {
+                let activeMissiles = appModel.shootTargetEntities.count
+                ForEach(0..<5) { missileNum in
+                    Image(systemName: "rectangle.portrait.fill")
+                        .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
+                }
+            }
+            .padding(.top, 2)
             
             Spacer()
         }

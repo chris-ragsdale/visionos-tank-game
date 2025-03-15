@@ -34,21 +34,21 @@
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
         "EnvironmentRoot",
-        "Playfield"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
-        "Root",
-        "EnvironmentRoot",
         "DirectionalLight"
       ],
       {
         "isExpanded" : false,
         "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
       },
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",

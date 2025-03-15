@@ -59,8 +59,9 @@ class TankBattlegroundViewModel {
         )
         
         // Command tank with target
-        let targetEntity = appModel.commandTank(target: target)
-        battlegroundBase.addChild(targetEntity, preservingWorldTransform: false)
+        if let targetEntity = appModel.commandTank(target: target) {
+            battlegroundBase.addChild(targetEntity, preservingWorldTransform: false)
+        }
     }
     
     // MARK: - Handle Tank Command

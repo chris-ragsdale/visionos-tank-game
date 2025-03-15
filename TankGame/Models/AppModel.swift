@@ -80,12 +80,19 @@ class AppModel {
     // Tank
     var tankEntity = Entity()
     var moveTargetEntity: Entity?
+    let maxMissiles = 5
     var shootTargetEntities: [TankCommand.ID: Entity] = [:]
     
     var selectedCommand: TankCommandType = .move
     var tankCommands: [TankCommand] = []
     
-    func commandTank(target: Target) -> Entity {
+    func commandTank(target: Target) -> Entity? {
+        // Skip if shooting and all missiles already in play
+        if selectedCommand == .shoot,
+           shootTargetEntities.count >= maxMissiles {
+            return nil
+        }
+        
         // Issue command
         let command = TankCommand(commandType: selectedCommand, target: target)
         tankCommands.append(command)
@@ -115,6 +122,10 @@ class AppModel {
     
     func handleMissleHit(_ commandId: TankCommand.ID) {
         if let shootTargetEntity = shootTargetEntities.removeValue(forKey: commandId) {
+            // add explosion emitter
+            
+            
+            // remove target
             shootTargetEntity.removeFromParent()
         }
     }
@@ -127,15 +138,12 @@ class AppModel {
         environmentRoot.move(to: newTransform, relativeTo: environmentRoot.parent, duration: 1)
     }
     
-    private func buildNewEnvironmentTransform(_ environmentRoot: Entity, _ newBehavior: PodiumBehavior) -> Transform {
+    private func buildNewEnvironmentTransform(_ environmentRoot: Entity, _ newPodiumBehavior: PodiumBehavior) -> Transform {
         var newTransform = environmentRoot.transform
-        switch newBehavior {
-        case .floatLow:
-            newTransform.translation = lowTransform
-        case .floatMid:
-            newTransform.translation = midTransform
-        case .floatHigh:
-            newTransform.translation = highTransform
+        switch newPodiumBehavior {
+        case .floatLow: newTransform.translation = lowTransform
+        case .floatMid: newTransform.translation = midTransform
+        case .floatHigh: newTransform.translation = highTransform
         default: break
         }
         return newTransform

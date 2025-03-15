@@ -269,7 +269,7 @@ def Xform "Root"
                             float particleAngularVelocity = 0
                             float particleAngularVelocityVariation = 1
                             asset particleImage = @ParticleEmitterPresetTextures/dustsheet.exr@
-                            double particleLifeSpan = 2
+                            double particleLifeSpan = 1
                             double particleLifeSpanVariation = 1
                             float particleMass = 1
                             float particleMassVariation = 0.8
