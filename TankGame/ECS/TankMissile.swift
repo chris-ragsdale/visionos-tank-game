@@ -9,7 +9,7 @@ import RealityKit
 import Foundation
 
 struct TankMissileComponent: Component {
-    let velocityMps: Float = 2
+    let velocityMps: Float = 2.5
     let commandId: TankCommand.ID
     var target: Target
 }
