@@ -6,8 +6,12 @@
 //
 
 import RealityKit
+import Foundation
 
 struct TankCommand: Equatable {
+    typealias ID = UUID
+    
+    let id: ID = UUID()
     let commandType: TankCommandType
     let target: Target
 }

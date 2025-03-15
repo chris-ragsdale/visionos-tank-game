@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct TankGameApp: App {
 
-    @State private var appModel = AppModel()
+    @State private var appModel = AppModel.shared
 
     var body: some Scene {
         

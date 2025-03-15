@@ -32,7 +32,7 @@ struct TankControlsPanel: View {
             
             // Tank Command
             Text("\(Image(systemName: "switch.2")) Tank Command")
-            Picker("Tank Command", selection: $appModel.selectedTankCommand) {
+            Picker("Tank Command", selection: $appModel.selectedCommand) {
                 Text("move").tag(TankCommandType.move)
                 Text("shoot").tag(TankCommandType.shoot)
             }

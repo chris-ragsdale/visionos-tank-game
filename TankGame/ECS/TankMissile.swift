@@ -6,9 +6,11 @@
 //
 
 import RealityKit
+import Foundation
 
 struct TankMissileComponent: Component {
     let velocityMps: Float = 2
+    let commandId: TankCommand.ID
     var target: Target
 }
 
@@ -33,6 +35,8 @@ class TankMissileSystem: System {
             if simd_distance(newPos, target) < 0.01 {
                 entity.components.remove(TankMissileComponent.self)
                 entity.removeFromParent()
+                
+                AppModel.shared.handleMissleHit(missile.commandId)
             }
         }
     }

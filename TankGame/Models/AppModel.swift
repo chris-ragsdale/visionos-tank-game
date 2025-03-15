@@ -9,9 +9,15 @@ import SwiftUI
 import Observation
 import RealityKit
 
+struct Missile {
+    let missileEntity: Entity
+    let targetEntity: Entity
+}
+
 /// Maintains app-wide state
-@MainActor @Observable
+@Observable
 class AppModel {
+    static let shared = AppModel()
     
     // Scene IDs
     let mainWindowID = "MainWindow"
@@ -73,13 +79,44 @@ class AppModel {
     
     // Tank
     var tankEntity = Entity()
-    var missileEntity: Entity?
-    var tankCommands: [TankCommand] = []
-    var selectedTankCommand: TankCommandType = .move
+    var moveTargetEntity: Entity?
+    var shootTargetEntities: [TankCommand.ID: Entity] = [:]
     
-    func commandTank(target: Target) {
-        let command = TankCommand(commandType: selectedTankCommand, target: target)
+    var selectedCommand: TankCommandType = .move
+    var tankCommands: [TankCommand] = []
+    
+    func commandTank(target: Target) -> Entity {
+        // Issue command
+        let command = TankCommand(commandType: selectedCommand, target: target)
         tankCommands.append(command)
+        
+        // Add target entity
+        let targetEntity = buildTargetEntity(target, command.id)
+        switch selectedCommand {
+        case .move:
+            moveTargetEntity?.removeFromParent()
+            moveTargetEntity = targetEntity
+        case .shoot:
+            shootTargetEntities[command.id] = targetEntity
+        }
+        
+        return targetEntity
+    }
+    
+    private func buildTargetEntity(_ target: Target, _ id: TankCommand.ID) -> Entity {
+        let targetEntityColor: UIColor = selectedCommand == .move ? .white : .red
+        let targetEntity = ModelEntity(
+            mesh: .generateSphere(radius: 0.1),
+            materials: [UnlitMaterial(color: targetEntityColor)]
+        )
+        targetEntity.setPosition(target.posBattleground, relativeTo: nil)
+        return targetEntity
+    }
+    
+    func handleMissleHit(_ commandId: TankCommand.ID) {
+        if let shootTargetEntity = shootTargetEntities.removeValue(forKey: commandId) {
+            shootTargetEntity.removeFromParent()
+        }
     }
     
     // Podium
