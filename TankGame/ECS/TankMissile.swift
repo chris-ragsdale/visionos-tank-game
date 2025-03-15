@@ -8,8 +8,8 @@
 import RealityKit
 
 struct TankMissileComponent: Component {
-    let velocityMps: Float = 0.1
-    var target: SIMD3<Float>
+    let velocityMps: Float = 2
+    var target: Target
 }
 
 class TankMissileSystem: System {
@@ -20,17 +20,19 @@ class TankMissileSystem: System {
 
         let query = EntityQuery(where: .has(TankMissileComponent.self))
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
-            guard let movement = entity.components[TankMissileComponent.self] else { continue }
+            guard let missile = entity.components[TankMissileComponent.self] else { continue }
+            let target = missile.target.posPlayfield
 
-            let direction = simd_normalize(movement.target - entity.position)
-            let stepDistance = movement.velocityMps * deltaTime
+            let direction = simd_normalize(target - entity.position)
+            let stepDistance = missile.velocityMps * deltaTime
 
             let newPos = entity.position + direction * stepDistance
             entity.position = newPos
 
             // Stop if close enough to target
-            if simd_distance(newPos, movement.target) < 0.01 {
+            if simd_distance(newPos, target) < 0.01 {
                 entity.components.remove(TankMissileComponent.self)
+                entity.removeFromParent()
             }
         }
     }

@@ -16,12 +16,18 @@ struct MainWindow: View {
         @Bindable var appModel = appModel
         NavigationStack(path: $appModel.navPath) {
             VStack {
+                Spacer()
+                
                 // Title
                 Text("Welcome to **Tank Game**")
                     .font(.extraLargeTitle)
                     .shadow(radius: 10)
                 
+                OverviewCard()
+                
                 LevelSelect()
+                
+                Spacer()
             }
             .navigationDestination(for: Level.ID.self) { id in
                 LevelView(levelID: id)

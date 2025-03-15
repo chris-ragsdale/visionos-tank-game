@@ -73,10 +73,11 @@ class AppModel {
     
     // Tank
     var tankEntity = Entity()
+    var missileEntity: Entity?
     var tankCommands: [TankCommand] = []
     var selectedTankCommand: TankCommandType = .move
     
-    func commandTank(target: SIMD3<Float>) {
+    func commandTank(target: Target) {
         let command = TankCommand(commandType: selectedTankCommand, target: target)
         tankCommands.append(command)
     }

@@ -21,9 +21,9 @@ struct TankControlsPanel: View {
             // Podium
             Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
             Picker("Podium Behavior", selection: $appModel.podiumBehavior) {
-                Text("Low").tag(PodiumBehavior.floatLow)
-                Text("Mid").tag(PodiumBehavior.floatMid)
-                Text("High").tag(PodiumBehavior.floatHigh)
+                Text("low").tag(PodiumBehavior.floatLow)
+                Text("mid").tag(PodiumBehavior.floatMid)
+                Text("high").tag(PodiumBehavior.floatHigh)
             }
             .pickerStyle(.segmented)
             .frame(width: 350)
@@ -49,7 +49,7 @@ struct TankControlsPanel: View {
 //                        .onChanged { value in
 //                            guard dragging == false else { return }
 //                            dragging = true
-////                            moveTank(dragValue: value)
+//                            // appModel.commandTank()
 //                        }
 //                        .onEnded { value in
 //                            dragging = false
@@ -71,9 +71,4 @@ struct TankControlsPanel: View {
             }
         }
     }
-    
-//    func moveTank(dragValue: DragGesture.Value) {
-//        let command = TankCommand(commandType: .move, target: .zero)
-//        appModel.tankCommands.append(command)
-//    }
 }

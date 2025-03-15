@@ -21,81 +21,11 @@ def Xform "Root"
         }
     )
     {
-        reorder nameChildren = ["Cannon", "ScratchedMetallicPaint", "Body", "WheelsRight", "WheelsLeft"]
+        reorder nameChildren = ["Body", "WheelsRight", "WheelsLeft", "Cannon"]
         quatf xformOp:orient = (0.70710677, 0, 0.70710677, 0)
         float3 xformOp:scale = (1.0000001, 1, 1.0000001)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def Xform "Cannon" (
-            active = true
-        )
-        {
-            reorder nameChildren = ["Base", "Shaft", "End", "ScratchedMetallicPaint"]
-            quatf xformOp:orient = (1, 0, 0, 0)
-            float3 xformOp:scale = (1, 1, 1)
-            float3 xformOp:translate = (0, 0.2, 0)
-            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-            def Cube "Base" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double size = 0.1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (2, 1, 2)
-                float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Cube "Shaft" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double size = 0.1
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (3.5, 0.5, 0.5)
-                float3 xformOp:translate = (0.25, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Cube "End" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/Cannon/ScratchedMetallicPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double size = 0.1
-                float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
-                int ui:nodegraph:node:stackingOrder = 2
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.3, 0.3, 0.3)
-                float3 xformOp:translate = (0.42, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def "ScratchedMetallicPaint" (
-                active = true
-                references = @../ScratchedMetallicPaint.usdz@
-            )
-            {
-                color3f inputs:Basecolor_Tint = (0.024134954, 0, 0.66982037) (
-                    colorSpace = "srgb_displayp3"
-                )
-            }
-        }
 
         def Xform "Body" (
             active = true
@@ -374,6 +304,91 @@ def Xform "Root"
                 token outputs:mtlx:surface.connect = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint/PreviewSurface.outputs:out>
                 float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
                 int ui:nodegraph:node:stackingOrder = 1
+            }
+        }
+
+        def Xform "Cannon" (
+            active = true
+        )
+        {
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (1, 0, 8.685033e-8, 0)
+            float3 xformOp:scale = (0.9999999, 0.9999999, 0.9999999)
+            float3 xformOp:translate = (0, 0.19999999, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def Xform "CannonRoot" (
+                active = true
+                customData = {
+                    float3 rotationEulerHint = (0, 1.5707963, 0)
+                }
+            )
+            {
+                reorder nameChildren = ["Base", "Shaft", "End", "ScratchedMetallicPaint"]
+                quatf xformOp:orient = (0.70710677, 0, 0.70710677, 0)
+                float3 xformOp:scale = (1, 1, 1)
+                float3 xformOp:translate = (0, 1.4901161e-8, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def Cube "Base" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/Cannon/CannonRoot/ScratchedMetallicPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double size = 0.1
+                    quatf xformOp:orient = (1, 0, 0, 0)
+                    float3 xformOp:scale = (2, 1, 2)
+                    float3 xformOp:translate = (0, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Cube "Shaft" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/Cannon/CannonRoot/ScratchedMetallicPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double size = 0.1
+                    float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
+                    int ui:nodegraph:node:stackingOrder = 1
+                    quatf xformOp:orient = (1, 0, 0, 0)
+                    float3 xformOp:scale = (3.5, 0.5, 0.5)
+                    float3 xformOp:translate = (0.25, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Cube "End" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/Cannon/CannonRoot/ScratchedMetallicPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double size = 0.1
+                    float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
+                    int ui:nodegraph:node:stackingOrder = 2
+                    quatf xformOp:orient = (1, 0, 0, 0)
+                    float3 xformOp:scale = (0.3, 0.3, 0.3)
+                    float3 xformOp:translate = (0.42, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def "ScratchedMetallicPaint" (
+                    active = true
+                    references = @../ScratchedMetallicPaint.usdz@
+                )
+                {
+                    color3f inputs:Basecolor_Tint = (0.024134954, 0, 0.66982037) (
+                        colorSpace = "srgb_displayp3"
+                    )
+                }
             }
         }
     }

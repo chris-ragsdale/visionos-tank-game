@@ -15,6 +15,15 @@
     "objectMetadataList" : [
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root"
       ],
       {
@@ -34,11 +43,74 @@
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
-        "EnvironmentRoot"
+        "EnvironmentRoot",
+        "DirectionalLight"
       ],
       {
-        "isExpanded" : true,
-        "isLocked" : false
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "SkyDome"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "Ground"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "PlayfieldGround"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "Tank"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "EnvironmentRoot",
+        "Playfield",
+        "Concrete"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root",
+        "Platform"
+      ],
+      {
+        "isExpanded" : false,
+        "isLocked" : true
       }
     ]
   },
@@ -58,6 +130,17 @@
         "TankRoot",
         "Cannon",
         "ScratchedMetallicPaint"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB",
+        "Root",
+        "TankRoot",
+        "Cannon",
+        "CannonRoot"
       ],
       {
         "isExpanded" : true,
@@ -138,6 +221,27 @@
         "Root",
         "TankRoot",
         "Cannon"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "520FD1A3-C759-49FA-9060-810855911CE7" : {
+    "objectMetadataList" : [
+      [
+        "520FD1A3-C759-49FA-9060-810855911CE7",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "520FD1A3-C759-49FA-9060-810855911CE7",
+        "Root",
+        "Missile"
       ],
       {
         "isExpanded" : true,

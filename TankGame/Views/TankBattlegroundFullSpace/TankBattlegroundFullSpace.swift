@@ -18,12 +18,14 @@ struct TankBattlegroundFullSpace: View {
     
     init() {
         TankMovementSystem.registerSystem()
+        TankMissileSystem.registerSystem()
     }
 
     var body: some View {
         RealityView { content in
-            guard let (tank, environmentRoot) = await model.initBattleground(content: content) else { return }
+            guard let (tank, missile, environmentRoot) = await model.initBattleground(content: content) else { return }
             appModel.tankEntity = tank
+            appModel.missileEntity = missile
             appModel.environmentRoot = environmentRoot
         }
         .gesture(
