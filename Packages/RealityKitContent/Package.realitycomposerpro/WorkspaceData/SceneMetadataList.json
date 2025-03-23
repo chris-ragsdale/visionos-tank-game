@@ -30,7 +30,7 @@
       ],
       {
         "isExpanded" : true,
-        "isLocked" : true
+        "isLocked" : false
       },
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
@@ -50,7 +50,7 @@
         "Playfield"
       ],
       {
-        "isExpanded" : false,
+        "isExpanded" : true,
         "isLocked" : true
       },
       [
@@ -98,16 +98,6 @@
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
-        "EnvironmentRoot",
-        "Ground"
-      ],
-      {
-        "isExpanded" : false,
-        "isLocked" : true
-      },
-      [
-        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
-        "Root",
         "EnvironmentRoot"
       ],
       {
@@ -132,15 +122,6 @@
         "TankRoot",
         "Body",
         "BodyPaint"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB",
-        "Root",
-        "TankRoot"
       ],
       {
         "isExpanded" : true,

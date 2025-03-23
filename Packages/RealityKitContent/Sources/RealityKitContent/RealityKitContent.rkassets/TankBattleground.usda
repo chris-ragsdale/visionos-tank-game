@@ -107,7 +107,8 @@ def Xform "Root"
             prepend apiSchemas = ["MaterialBindingAPI"]
         )
         {
-            rel material:binding = </Root/EnvironmentRoot/Ground/BrownMerinoWool> (
+            reorder nameChildren = ["BrownMerinoWool", "Material"]
+            rel material:binding = </Root/EnvironmentRoot/Ground/Material> (
                 bindMaterialAs = "weakerThanDescendants"
             )
             double size = 10
@@ -117,7 +118,7 @@ def Xform "Root"
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
             def "BrownMerinoWool" (
-                active = true
+                active = false
                 references = @BrownMerinoWool.usdz@
             )
             {
@@ -125,6 +126,23 @@ def Xform "Root"
                     colorSpace = "srgb_displayp3"
                 )
                 float2 inputs:UV_Scale = (10, 10)
+            }
+
+            def Material "Material"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
+                token outputs:surface.connect = </Root/EnvironmentRoot/Ground/Material/UsdPreviewSurface.outputs:surface>
+
+                def Shader "UsdPreviewSurface"
+                {
+                    uniform token info:id = "UsdPreviewSurface"
+                    color3f inputs:diffuseColor = (0.39023042, 0.27827176, 0.11389024) (
+                        colorSpace = "srgb_displayp3"
+                    )
+                    float inputs:roughness = 0.9
+                    token outputs:surface
+                }
             }
         }
 
@@ -576,7 +594,7 @@ def Xform "Root"
             references = @SmoothConcrete.usdz@
         )
         {
-            color3f inputs:Basecolor_Tint = (0.364288, 0.3015893, 0.13340391) (
+            color3f inputs:Basecolor_Tint = (0.0024306057, 0.0025252525, 0.0024473388) (
                 colorSpace = "srgb_displayp3"
             )
             token outputs:mtlx:surface.connect = </Root/Platform/SmoothConcrete/PreviewSurface.outputs:out>

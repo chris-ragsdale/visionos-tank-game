@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["Tank", "TankRoot"]
+    reorder nameChildren = ["TankRoot", "Collider", "HealthAttachment"]
     float3 xformOp:translate = (0, 0, 0)
     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -448,6 +448,14 @@ def Xform "Root"
                 float3 position = (-0.012499943, 0.120000005, 0)
             }
         }
+    }
+
+    def Xform "HealthAttachment" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (0, 0.6, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }
 

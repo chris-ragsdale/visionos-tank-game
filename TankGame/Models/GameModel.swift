@@ -43,11 +43,8 @@ import Combine
             print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
             
             // Handle missile collision
-            if let missile = event.entityB.components[TankMissileComponent.self] {
-                let missileEntity = event.entityB
-                let posBattleground = missileEntity.convert(position: .zero, to: nil)
-                self.handleMissileHit(missile, hitPosition: posBattleground)
-            }
+            guard let missile = event.entityB.components[TankMissileComponent.self] else { return }
+            self.handleMissileHit(missile, self.enemyTank)
         }
         collisionSubscriptions.append(playerTankSub)
         collisionSubscriptions.append(enemyTankSub)
@@ -57,7 +54,7 @@ import Combine
     var tank: Tank?
     var enemyTank: Tank?
     
-    // Commands & Targets
+    // Commands
     var selectedCommand: TankCommandType = .move
     var tankCommands: [TankCommand] = [] {
         didSet {
@@ -69,8 +66,26 @@ import Combine
         }
     }
     
+    // Move Target
     var moveTargetEntity: Entity?
-    var shootTargetEntities: [TankCommand.ID: Entity] = [:]
+    
+    func setMoveTargetEntity(_ entity: Entity) {
+        moveTargetEntity?.removeFromParent()
+        moveTargetEntity = entity
+    }
+    
+    // Missile Targets
+    var missileTargetEntities: [TankCommand.ID: Entity] = [:]
+    
+    func addMissileTargetEntity(_ id: TankCommand.ID, _ entity: Entity) {
+        missileTargetEntities[id] = entity
+    }
+    
+    func removeMissileTargetEntity(_ id: TankCommand.ID) -> Entity? {
+        guard let missileTargetEntity = missileTargetEntities.removeValue(forKey: id) else { return nil }
+        missileTargetEntity.removeFromParent()
+        return missileTargetEntity
+    }
     
     // Missiles
     let maxMissiles = 5
@@ -82,10 +97,11 @@ import Combine
         missileEntities[missile.id] = missileEntity
     }
     
-    func removeMissileEntity(_ id: UUID) {
-        guard let missileEntity = missileEntities.removeValue(forKey: id) else { return }
+    func removeMissileEntity(_ id: UUID) -> Entity? {
+        guard let missileEntity = missileEntities.removeValue(forKey: id) else { return nil }
         missileEntity.components.remove(TankMissileComponent.self)
         missileEntity.removeFromParent()
+        return missileEntity
     }
     
     // Podium
@@ -93,31 +109,22 @@ import Combine
     var environmentRoot: Entity?
 }
 
-// MARK: - +TankCommands
+// MARK: - GameModel + Tank Commands
 extension GameModel {
     
     /// Capture target position values from gesture and issue command
     func targetTappedPosition(_ tapEvent: EntityTargetValue<DragGesture.Value>) {
         // Skip if shooting and all missiles are already in play
         if selectedCommand == .shoot,
-           shootTargetEntities.count >= maxMissiles {
+           missileTargetEntities.count >= maxMissiles {
             return
         }
         
         // Issue command and visualize target
-        let target = buildTarget(from: tapEvent)
+        let target = Target(tapEvent, tank)
         let command = TankCommand(commandType: selectedCommand, target: target)
         tankCommands.append(command)
         addTargetEntity(target, command.id)
-    }
-    
-    /// Calculate target from tap gesture
-    private func buildTarget(from tapEvent: EntityTargetValue<DragGesture.Value>) -> Target {
-        return Target(
-            posBattleground: tapEvent.convert(tapEvent.location3D, from: .local, to: .scene),
-            posPlayfield: tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.root.parent!),
-            posCannonParent: tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.cannon.parent!)
-        )
     }
     
     /// Build and add target entity to visualize where the tank/missile is aiming
@@ -132,25 +139,24 @@ extension GameModel {
         
         // Add to scene
         switch selectedCommand {
-        case .move:
-            moveTargetEntity?.removeFromParent()
-            moveTargetEntity = targetEntity
-        case .shoot:
-            shootTargetEntities[id] = targetEntity
+        case .move:  setMoveTargetEntity(targetEntity)
+        case .shoot: addMissileTargetEntity(id, targetEntity)
         }
         battlegroundBase.addChild(targetEntity)
     }
     
-    /// Remove missile &  target entity then create explosion
-    func handleMissileHit(_ missile: TankMissileComponent, hitPosition: SIMD3<Float>? = nil) {
-        removeMissileEntity(missile.id)
+    /// Damage tank (if present), remove missile & target entity, then create explosion
+    func handleMissileHit(_ missile: TankMissileComponent, _ tank: Tank? = nil) {
+        tank?.damage()
         
-        // remove target
-        guard let shootTargetEntity = shootTargetEntities.removeValue(forKey: missile.commandId) else { return }
-        let shootTargetPosition = shootTargetEntity.position
-        shootTargetEntity.removeFromParent()
+        let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: nil)
         
-        addExplosion(hitPosition ?? shootTargetPosition)
+        let _ = removeMissileEntity(missile.id)
+        let _ = removeMissileTargetEntity(missile.commandId)
+        
+        if let explosionPosition = hitPosition {
+            addExplosion(explosionPosition)
+        }
     }
     
     private func addExplosion(_ position: SIMD3<Float>) {

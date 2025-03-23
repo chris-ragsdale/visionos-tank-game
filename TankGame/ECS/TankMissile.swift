@@ -44,12 +44,7 @@ class TankMissileSystem: System {
             // Explode if close enough to target
             if simd_distance(newPos, target) < 0.015 {
                 GameModel.shared.handleMissileHit(missile)
-                continue
             }
-            
-            // Explode if close enough to tank
-//            guard let enemyTank = GameModel.shared.enemyTank else { continue }
-//            handleMissileHit(entity, missile)
         }
     }
 }

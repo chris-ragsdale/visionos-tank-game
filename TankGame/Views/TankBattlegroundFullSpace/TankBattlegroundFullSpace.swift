@@ -24,8 +24,15 @@ struct TankBattlegroundFullSpace: View {
     }
 
     var body: some View {
-        RealityView { content in
-            await initBattleground(content)
+        RealityView { content, attachments in
+            await initBattleground(content, attachments)
+        } attachments: {
+            Attachment(id: "PlayerTankHealth") {
+                TankHealth(health: gameModel.tank?.health)
+            }
+            Attachment(id: "EnemyTankHealth") {
+                TankHealth(health: gameModel.enemyTank?.health)
+            }
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 0.0)
@@ -49,7 +56,7 @@ struct TankBattlegroundFullSpace: View {
         }
     }
     
-    func initBattleground(_ content: RealityViewContent) async {
+    func initBattleground(_ content: RealityViewContent, _ attachments: RealityViewAttachments) async {
         // Load and configure entities
         guard let entities = await loadEntities() else { return }
         
@@ -59,6 +66,9 @@ struct TankBattlegroundFullSpace: View {
         // Init game model
         gameModel.initEntities(entities)
         gameModel.initCollisionSubs(content)
+        
+        // Configure tank health attachments
+        configureTankHealthAttachments(attachments)
     }
     
     func loadEntities() async -> Entities? {
@@ -84,6 +94,20 @@ struct TankBattlegroundFullSpace: View {
         explosionEmitterEntity.removeFromParent()
         
         return (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
+    }
+    
+    func configureTankHealthAttachments(_ attachments: RealityViewAttachments) {
+        if let playerHealthAttachment = attachments.entity(for: "PlayerTankHealth"),
+           let playerHealthAttachmentRoot = gameModel.tank?.root.findEntity(named: "HealthAttachment") {
+            playerHealthAttachment.components.set(BillboardComponent())
+            playerHealthAttachmentRoot.addChild(playerHealthAttachment)
+        }
+        
+        if let enemyHealthAttachment = attachments.entity(for: "EnemyTankHealth"),
+           let enemyHealthAttachmentRoot = gameModel.enemyTank?.root.findEntity(named: "HealthAttachment") {
+            enemyHealthAttachment.components.set(BillboardComponent())
+            enemyHealthAttachmentRoot.addChild(enemyHealthAttachment)
+        }
     }
 }
 

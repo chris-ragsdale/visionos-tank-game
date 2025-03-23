@@ -7,6 +7,7 @@
 
 import RealityKit
 import Foundation
+import SwiftUI
 
 struct TankCommand: Equatable {
     typealias ID = UUID
@@ -22,4 +23,10 @@ struct Target: Equatable {
     let posBattleground: SIMD3<Float>
     let posPlayfield: SIMD3<Float>
     let posCannonParent: SIMD3<Float>
+    
+    init(_ tapEvent: EntityTargetValue<DragGesture.Value>, _ tank: Tank?) {
+        posBattleground = tapEvent.convert(tapEvent.location3D, from: .local, to: .scene)
+        posPlayfield = tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.root.parent!)
+        posCannonParent = tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.cannon.parent!)
+    }
 }

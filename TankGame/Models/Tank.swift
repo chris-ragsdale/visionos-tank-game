@@ -12,15 +12,13 @@ import RealityKitContent
 
 struct Health {
     let capacity: Int
-    let current: Int
+    var current: Int
     
-    var isAlive: Bool {
-        current > 0
-    }
+    var isAlive: Bool { current > 0 }
 }
 
-class Tank {
-    let health = Health(capacity: 3, current: 3)
+@Observable class Tank {
+    var health = Health(capacity: 5, current: 5)
     
     // Entities
     let root: Entity
@@ -37,7 +35,26 @@ class Tank {
         self.missileTemplate = missileTemplate
     }
 }
- 
+
+// MARK: - Tank + Damage
+
+extension Tank {
+    func damage() {
+        health.current -= 1
+        print("Ouch! New health: \(health.current)/\(health.capacity)")
+        
+        if !health.isAlive {
+            print("Dead!")
+        }
+    }
+    
+    private func destroy() {
+        
+    }
+}
+
+// MARK: - Tank + Commands
+
 extension Tank {
     func handleNextCommand(_ command: TankCommand) -> Entity? {
         switch command.commandType {
