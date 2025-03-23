@@ -24,7 +24,7 @@ def Xform "Root"
         {
             quatf xformOp:orient = (0.46174854, -0.8870108, 2.9591067e-8, 6.421406e-8)
             float3 xformOp:scale = (0.99999994, 0.99999994, 0.99999994)
-            float3 xformOp:translate = (0.6229592, 18.812338, 11.757125)
+            float3 xformOp:translate = (0, 50, -11.75)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
             def RealityKitComponent "DirectionalLight"
@@ -45,7 +45,7 @@ def Xform "Root"
         {
             reorder nameChildren = ["Dome_01", "Ground_01", "Grid", "mtl", "Ground", "Ground"]
             quatf xformOp:orient = (1, 0, 0, 0)
-            float3 xformOp:scale = (0.02, 0.02, 0.02)
+            float3 xformOp:scale = (0.05, 0.05, 0.05)
             float3 xformOp:translate = (0, 0, 0)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -55,15 +55,34 @@ def Xform "Root"
                 {
                     token outputs:mtlx:surface
                     token outputs:realitykit:vertex
+
+                    over "DomeMAT"
+                    {
+                        color3f inputs:diffuseColor = (0.69501656, 0.06107208, 0.030839674) (
+                            colorSpace = "srgb_displayp3"
+                        )
+                        color3f inputs:emissiveColor = (0.2938368, 0.2938368, 0.2938368) (
+                            colorSpace = "srgb_displayp3"
+                        )
+                        delete color3f inputs:emissiveColor.connect = </Root/EnvironmentRoot/SkyDome/mtl/DomeMATSG/file5.outputs:rgb>
+                        float inputs:ior = 1.5
+                        float inputs:occlusion = 1
+                        float inputs:opacity = 1
+                        float inputs:roughness = 1
+                    }
                 }
 
-                over "GridMATSG"
+                over "GridMATSG" (
+                    active = false
+                )
                 {
                     token outputs:mtlx:surface
                     token outputs:realitykit:vertex
                 }
 
-                over "GroundMATSG"
+                over "GroundMATSG" (
+                    active = false
+                )
                 {
                     token outputs:mtlx:surface
                     token outputs:realitykit:vertex
@@ -76,7 +95,9 @@ def Xform "Root"
             {
             }
 
-            over "Grid"
+            over "Grid" (
+                active = false
+            )
             {
             }
         }
@@ -91,7 +112,7 @@ def Xform "Root"
             )
             double size = 10
             quatf xformOp:orient = (1, 0, 0, 0)
-            float3 xformOp:scale = (5, 0.01, 5)
+            float3 xformOp:scale = (12, 0.01, 12)
             float3 xformOp:translate = (0, 0, 0)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -100,10 +121,10 @@ def Xform "Root"
                 references = @BrownMerinoWool.usdz@
             )
             {
-                color3f inputs:Basecolor_Tint = (0.014721276, 0.1660559, 0.004488263) (
+                color3f inputs:Basecolor_Tint = (0.640408, 0.47749925, 0.055819876) (
                     colorSpace = "srgb_displayp3"
                 )
-                float2 inputs:UV_Scale = (5, 5)
+                float2 inputs:UV_Scale = (10, 10)
             }
         }
 
@@ -500,6 +521,30 @@ def Xform "Root"
                             )
                         }
                     }
+                }
+            }
+        }
+
+        def Xform "DirectionalLight_1" (
+            customData = {
+                float3 rotationEulerHint = (-0.9917534, 2.913958e-8, -7.957405e-8)
+            }
+        )
+        {
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (-0.8795519, 0.47580293, -3.174567e-8, 2.8062408e-8)
+            float3 xformOp:scale = (0.9999999, 0.9999999, 0.9999999)
+            float3 xformOp:translate = (0, 50, -11.75)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def RealityKitComponent "DirectionalLight"
+            {
+                token info:id = "RealityKit.DirectionalLight"
+                float intensity = 7000
+
+                def RealityKitStruct "Shadow"
+                {
                 }
             }
         }

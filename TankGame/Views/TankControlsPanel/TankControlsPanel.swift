@@ -36,7 +36,7 @@ struct TankControlsPanel: View {
             
             // Tank Controls
             VStack {
-                Text("\(Image(systemName: "scope")) Tank Command")
+                Text("\(Image(systemName: "target")) Tank Command")
                 Picker("Tank Command", selection: $gameModel.selectedCommand) {
                     Text("move").tag(TankCommandType.move)
                     Text("shoot").tag(TankCommandType.shoot)
@@ -49,15 +49,17 @@ struct TankControlsPanel: View {
                 // Missiles
                 VStack {
                     HStack {
+                        Text("\(Image(systemName: "dot.scope"))")
+                        
                         let activeMissiles = gameModel.shootTargetEntities.count
                         ForEach(0..<5) { missileNum in
                             Image(systemName: "rectangle.portrait.fill")
                                 .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
                         }
+                        
+                        Text("\(Image(systemName: "dot.scope"))")
                     }
                     .padding(.top, 2)
-                    
-                    Text("\(Image(systemName: "dot.scope")) Missiles")
                 }
             }
             .padding()
