@@ -13,7 +13,7 @@ def Xform "Root"
     )
     {
         reorder nameChildren = ["PlayfieldOld", "SkyDome", "Ground", "Playfield", "DirectionalLight"]
-        float3 xformOp:translate = (0, -2.5, -8)
+        float3 xformOp:translate = (0, -2.5, -10)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def Xform "DirectionalLight" (
@@ -30,7 +30,7 @@ def Xform "Root"
             def RealityKitComponent "DirectionalLight"
             {
                 token info:id = "RealityKit.DirectionalLight"
-                float intensity = 10000
+                float intensity = 7000
 
                 def RealityKitStruct "Shadow"
                 {
@@ -111,7 +111,7 @@ def Xform "Root"
             active = true
         )
         {
-            reorder nameChildren = ["Concrete", "PlayfieldGround", "Tank", "ExplosionEmitter"]
+            reorder nameChildren = ["Concrete", "PlayfieldGround", "PlayerTank", "ExplosionEmitter", "ExplosionEmitter_1", "EnemyTank"]
             def Cube "Concrete" (
                 active = true
                 prepend apiSchemas = ["MaterialBindingAPI"]
@@ -193,7 +193,7 @@ def Xform "Root"
                 }
             }
 
-            def "Tank" (
+            def "PlayerTank" (
                 active = true
                 customData = {
                     float3 rotationEulerHint = (0, 0, 0)
@@ -205,6 +205,52 @@ def Xform "Root"
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0.145, 5)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                over "TankRoot"
+                {
+                    over "Body"
+                    {
+                        over "BodyPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.37254903, 0.36862746, 0.32941177) (
+                                colorSpace = "srgb_displayp3"
+                            )
+                        }
+                    }
+
+                    over "Cannon"
+                    {
+                        over "CannonRoot"
+                        {
+                            over "ScratchedMetallicPaint"
+                            {
+                                color3f inputs:Basecolor_Tint = (0.033858042, 0, 0.92779356) (
+                                    colorSpace = "srgb_displayp3"
+                                )
+                            }
+                        }
+                    }
+
+                    over "WheelsRight"
+                    {
+                        over "ScratchedMetallicPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.105882354, 0.08627451, 0.5254902) (
+                                colorSpace = "srgb_displayp3"
+                            )
+                        }
+                    }
+
+                    over "WheelsLeft"
+                    {
+                        over "ScratchedMetallicPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.105882354, 0.08627451, 0.5254902) (
+                                colorSpace = "srgb_displayp3"
+                            )
+                        }
+                    }
+                }
             }
 
             def Xform "ExplosionEmitter"
@@ -246,7 +292,7 @@ def Xform "Root"
                             float3 acceleration = (0, -0.05, 0)
                             token animationRepeatMode = "PlayOnce"
                             token billboardMode = "Billboard"
-                            float birthRate = 5000
+                            float birthRate = 10000
                             float birthRateVariation = 0
                             token blendMode = "Alpha"
                             float colorEvolutionPower = 1
@@ -282,8 +328,8 @@ def Xform "Root"
                             float sizeMultiplierAtEndOfLifespanPower = 0.2
                             token sortOrder = "DecreasingDepth"
                             float spreadingAngle = 0
-                            float4 startColorA = (0.7483517, 0.13001257, 0, 0.26)
-                            float4 startColorB = (0.73648465, 0.82537854, 0.78932357, 0.07)
+                            float4 startColorA = (0.7779445, 0, 0, 0.26)
+                            float4 startColorB = (0, 0, 0, 0.07)
                             float stretchFactor = 0
                             bool useEndColor = 0
                             bool useEndColorRange = 0
@@ -294,6 +340,164 @@ def Xform "Root"
 
                         def RealityKitStruct "spawnedEmitter"
                         {
+                        }
+                    }
+                }
+            }
+
+            def Xform "ExplosionEmitter_1" (
+                active = false
+            )
+            {
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1, 1, 1)
+                float3 xformOp:translate = (0, 0.20000005, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def RealityKitComponent "VFXEmitter"
+                {
+                    token info:id = "RealityKit.VFXEmitter"
+
+                    def RealityKitStruct "currentState"
+                    {
+                        token birthDirection = "Normal"
+                        token birthLocation = "Volume"
+                        float3 emissionDirection = (0, 1, 0)
+                        double emissionDuration = 0.05
+                        double emissionDurationVariation = 0
+                        token emitterShape = "Sphere"
+                        double idleDuration = 5
+                        double idleDurationVariation = 0
+                        bool isLocal = 0
+                        bool isSpawningEnabled = 0
+                        bool loops = 0
+                        float particleSpeed = 0.5
+                        float particleSpeedVariation = 0.1
+                        float3 shapeSize = (0.4, 0.4, 0.4)
+                        bool spawnInheritParentColor = 0
+                        token spawnOccasion = "OnDeath"
+                        float spawnSpreadFactor = 0
+                        float spawnSpreadFactorVariation = 0
+                        float spawnVelocityFactor = 1
+                        double warmupDuration = 0
+
+                        def RealityKitStruct "mainEmitter"
+                        {
+                            float3 acceleration = (0, -0.05, 0)
+                            token animationRepeatMode = "PlayOnce"
+                            token billboardMode = "Billboard"
+                            float birthRate = 10000
+                            float birthRateVariation = 0
+                            token blendMode = "Alpha"
+                            float colorEvolutionPower = 1
+                            int64 columnCount = 4
+                            float dampingFactor = 8
+                            float4 endColorA = (0.0013309671, 0.03458923, 1, 1)
+                            float4 endColorB = (0.11386989, 0.0064959256, 0.10626237, 1)
+                            float frameRate = 0
+                            float frameRateVariation = 0
+                            int64 initialFrame = 2
+                            int64 initialFrameVariation = 6
+                            bool isAnimated = 1
+                            bool isLightingEnabled = 0
+                            float noiseAnimationSpeed = 0
+                            float noiseScale = 1
+                            float noiseStrength = 0.1
+                            token opacityOverLife = "LinearFadeOut"
+                            float particleAngle = 0
+                            float particleAngleVariation = 0
+                            float particleAngularVelocity = 0
+                            float particleAngularVelocityVariation = 1
+                            asset particleImage = @ParticleEmitterPresetTextures/dustsheet.exr@
+                            double particleLifeSpan = 1
+                            double particleLifeSpanVariation = 1
+                            float particleMass = 1
+                            float particleMassVariation = 0.8
+                            float particleSize = 0.2
+                            float particleSizeVariation = 0
+                            float3 radialGravityCenter = (0, -0.1, 0)
+                            float radialGravityStrength = -0.1
+                            int64 rowCount = 4
+                            float sizeMultiplierAtEndOfLifespan = 2
+                            float sizeMultiplierAtEndOfLifespanPower = 0.2
+                            token sortOrder = "DecreasingDepth"
+                            float spreadingAngle = 0
+                            float4 startColorA = (0.899971, 0.15391146, 0, 0.26)
+                            float4 startColorB = (0.95968837, 0.9596883, 0.9596883, 0.07)
+                            float stretchFactor = 0
+                            bool useEndColor = 0
+                            bool useEndColorRange = 0
+                            bool useStartColorRange = 1
+                            float3 vortexDirection = (0, 1, 0)
+                            float vortexStrength = 0
+                        }
+
+                        def RealityKitStruct "spawnedEmitter"
+                        {
+                        }
+                    }
+                }
+            }
+
+            def "EnemyTank" (
+                active = true
+                customData = {
+                    float3 rotationEulerHint = (0, 0, 0)
+                }
+                references = @Tank/Tank.usda@
+            )
+            {
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (1, 1, 1)
+                float3 xformOp:translate = (0, 0.145, -5)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                over "TankRoot"
+                {
+                    over "Cannon"
+                    {
+                        over "CannonRoot"
+                        {
+                            over "ScratchedMetallicPaint"
+                            {
+                                color3f inputs:Basecolor_Tint = (0.66982037, 0.12284724, 0.013632257) (
+                                    colorSpace = "srgb_displayp3"
+                                )
+                            }
+                        }
+                    }
+
+                    over "Body"
+                    {
+                        over "BodyPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.37254903, 0.36862746, 0.32941177) (
+                                colorSpace = "srgb_displayp3"
+                            )
+                        }
+                    }
+
+                    over "WheelsRight"
+                    {
+                        over "ScratchedMetallicPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.42352942, 0.05490196, 0.019607844) (
+                                colorSpace = "srgb_displayp3"
+                            )
+                        }
+                    }
+
+                    over "WheelsLeft"
+                    {
+                        over "ScratchedMetallicPaint"
+                        {
+                            color3f inputs:Basecolor_Tint = (0.42352942, 0.05490196, 0.019607844) (
+                                colorSpace = "srgb_displayp3"
+                            )
                         }
                     }
                 }

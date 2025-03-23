@@ -10,7 +10,19 @@ import Observation
 import RealityKit
 import RealityKitContent
 
+struct Health {
+    let capacity: Int
+    let current: Int
+    
+    var isAlive: Bool {
+        current > 0
+    }
+}
+
 class Tank {
+    let health = Health(capacity: 3, current: 3)
+    
+    // Entities
     let root: Entity
     let cannon: Entity
     let cannonShaft: Entity
@@ -18,6 +30,8 @@ class Tank {
     
     init(_ root: Entity, _ missileTemplate: Entity) {
         self.root = root
+        Collisions.shared.configureTankCollisions(self.root)
+    
         cannon = root.findEntity(named: "Cannon")!
         cannonShaft = cannon.findEntity(named: "Shaft")!
         self.missileTemplate = missileTemplate
@@ -25,12 +39,14 @@ class Tank {
 }
  
 extension Tank {
-    func handleNextCommand(_ command: TankCommand) {
+    func handleNextCommand(_ command: TankCommand) -> Entity? {
         switch command.commandType {
         case .move:
             move(command)
+            return nil
         case .shoot:
-            shoot(command)
+            let missile = shoot(command)
+            return missile
         }
     }
     
@@ -44,21 +60,29 @@ extension Tank {
     }
     
     /// Point cannon at target, add missile and start moving missile
-    private func shoot(_ command: TankCommand) {
+    private func shoot(_ command: TankCommand) -> Entity? {
         // Point cannon towards target
         cannon.look(at: command.target.posCannonParent, from: cannon.position, relativeTo: cannon.parent)
         
         // Add missile to playfield
         guard let playfield = root.parent else {
             print("Failed to shoot")
-            return
+            return nil
         }
+        return buildMissile(playfield, command)
+    }
+    
+    private func buildMissile(_ playfield: Entity, _ command: TankCommand) -> Entity {
+        // Build and place missile
         let missile = missileTemplate.clone(recursive: true)
+        Collisions.shared.configureMissileCollisions(missile)
         let missilePos = cannonShaft.convert(position: .zero, to: playfield)
         missile.position = missilePos
+        
+        // Add to playfield
         playfield.addChild(missile)
         
-        // Point missile at target
+        // Point at target
         missile.look(
             at: command.target.posPlayfield,
             from: missile.position,
@@ -67,7 +91,8 @@ extension Tank {
             forward: .positiveZ
         )
         
-        // Start moving missile
+        // Add to system
         missile.components[TankMissileComponent.self] = TankMissileComponent(commandId: command.id, target: command.target)
+        return missile
     }
 }

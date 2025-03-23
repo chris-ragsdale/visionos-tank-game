@@ -15,6 +15,8 @@ struct TankBattlegroundFullSpace: View {
     @Environment(AppModel.self) var appModel
     @Environment(GameModel.self) var gameModel
     
+    @State var dragging = false
+    
     init() {
         TankMovementSystem.registerSystem()
         TankMissileSystem.registerSystem()
@@ -25,11 +27,17 @@ struct TankBattlegroundFullSpace: View {
         RealityView { content in
             await initBattleground(content)
         }
-        .gesture(
-            SpatialTapGesture()
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0.0)
                 .targetedToAnyEntity()
-                .onEnded { event in
+                .onChanged { event in
+                    guard !dragging else { return }
+                    dragging = true
+                    
                     gameModel.targetTappedPosition(event)
+                }
+                .onEnded { event in
+                    dragging = false
                 }
         )
         .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -42,34 +50,47 @@ struct TankBattlegroundFullSpace: View {
     }
     
     func initBattleground(_ content: RealityViewContent) async {
+        // Load and configure entities
+        guard let entities = await loadEntities() else { return }
+        entities.playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
+        entities.explosionEmitterEntity.removeFromParent()
+        
+        // Save entities to game model
+        gameModel.initEntities(entities)
+        
+        // Add bg to view
+        content.add(gameModel.battlegroundBase)
+    }
+    
+    func loadEntities() async -> Entities? {
         // Load USDAs
         guard let missileTemplate = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle),
               let battlegroundUSDA = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
             print("Failed to load USDAs")
-            return
+            return nil
         }
         
-        // Set up battleground entities
-        guard let tankRoot = battlegroundUSDA.findEntity(named: "Tank"),
+        // Load entities from battleground
+        guard let playerTankRoot = battlegroundUSDA.findEntity(named: "PlayerTank"),
               let environmentRoot = battlegroundUSDA.findEntity(named: "EnvironmentRoot"),
               let playfieldGround = battlegroundUSDA.findEntity(named: "PlayfieldGround"),
               let explosionEmitterEntity = battlegroundUSDA.findEntity(named: "ExplosionEmitter") else {
             print("Failed to unpack battleground USDA")
-            return
+            return nil
         }
-        playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
-        explosionEmitterEntity.removeFromParent()
         
-        // Set bg entities to game model
-        gameModel.tank = Tank(tankRoot, missileTemplate)
-        gameModel.environmentRoot = environmentRoot
-        gameModel.explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
-        
-        // Add bg to view
-        gameModel.battlegroundBase.addChild(battlegroundUSDA)
-        content.add(gameModel.battlegroundBase)
+        return (missileTemplate, battlegroundUSDA, playerTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
     }
 }
+
+typealias Entities = (
+    missileTemplate: Entity,
+    battlegroundUSDA: Entity,
+    playerTankRoot: Entity,
+    environmentRoot: Entity,
+    playfieldGround: Entity,
+    explosionEmitterEntity: Entity
+)
 
 #Preview(immersionStyle: .progressive) {
     TankBattlegroundFullSpace()

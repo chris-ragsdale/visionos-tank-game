@@ -16,6 +16,31 @@ struct LevelView: View {
     }
     
     var body: some View {
+        switch levelID {
+        case 0:
+            tutorialLevel()
+        default:
+            EmptyView()
+        }
+    }
+}
+
+extension LevelView {
+    @ViewBuilder
+    func tutorialLevel() -> some View {
+        VStack {
+            
+            Spacer()
+            
+            Text(level.description)
+            
+            Spacer()
+        }
+        .navigationTitle("Tutorial")
+    }
+    
+    @ViewBuilder
+    func level1() -> some View {
         VStack {
 //            Text(level.name)
 //                .font(.title)
@@ -28,4 +53,10 @@ struct LevelView: View {
         }
         .navigationTitle(level.name)
     }
+}
+
+#Preview(windowStyle: .automatic) {
+    LevelView(levelID: 0)
+        .environment(AppModel())
+        .frame(width: 800, height: 600)
 }

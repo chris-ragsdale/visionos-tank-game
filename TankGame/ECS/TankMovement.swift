@@ -10,6 +10,7 @@ import RealityKit
 struct TankMovementComponent: Component {
     let velocityMps: Float = 1.5
     var target: Target
+    var firstUpdate: Bool = true
 }
 
 class TankMovementSystem: System {
@@ -20,7 +21,15 @@ class TankMovementSystem: System {
 
         let query = EntityQuery(where: .has(TankMovementComponent.self))
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
-            guard let movement = entity.components[TankMovementComponent.self] else { continue }
+            guard var movement = entity.components[TankMovementComponent.self] else { continue }
+            
+            // Skip first update - prevents shoot forward when moving after not moving for a while
+            if movement.firstUpdate {
+                movement.firstUpdate = false
+                entity.components.set(movement)
+                continue
+            }
+            
             let target = movement.target.posPlayfield
 
             let direction = simd_normalize(target - entity.position)

@@ -14,25 +14,45 @@ import RealityKitContent
 @Observable class GameModel {
     static let shared = GameModel()
     
+    func initEntities(_ entities: Entities) {
+        let (missileTemplate, battlegroundUSDA, playerTankRoot, environmentRoot, _, explosionEmitterEntity) = entities
+        
+        tank = Tank(playerTankRoot, missileTemplate)
+        self.environmentRoot = environmentRoot
+        explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
+        battlegroundBase.addChild(battlegroundUSDA)
+    }
+    
     // Battleground
     var battlegroundBase = Entity()
     
-    // Tank & Commands
+    // Tanks & Commands
     var tank: Tank?
+    var enemyTank: Tank?
     
     var selectedCommand: TankCommandType = .move
     var tankCommands: [TankCommand] = [] {
         didSet {
             // Issue command to tank on add
             guard let nextCommand = tankCommands.last else { return }
-            tank?.handleNextCommand(nextCommand)
+            if let newMissile = tank?.handleNextCommand(nextCommand) {
+                addMissileEntity(newMissile)
+            }
         }
     }
     
     var moveTargetEntity: Entity?
-    let maxMissiles = 5
     var shootTargetEntities: [TankCommand.ID: Entity] = [:]
+    
+    // Missiles
+    let maxMissiles = 5
     var explosionEmitter: ParticleEmitterComponent?
+    var missileEntities: [UUID: Entity] = [:]
+    
+    func addMissileEntity(_ missileEntity: Entity) {
+        guard let missile = missileEntity.components[TankMissileComponent.self] else { return }
+        missileEntities[missile.id] = missileEntity
+    }
     
     // Podium
     var podiumBehavior: PodiumBehavior = .floatMid
@@ -43,7 +63,7 @@ import RealityKitContent
 extension GameModel {
     
     /// Capture target position values from gesture and issue command
-    func targetTappedPosition(_ tapEvent: EntityTargetValue<SpatialTapGesture.Value>) {
+    func targetTappedPosition(_ tapEvent: EntityTargetValue<DragGesture.Value>) {
         // Skip if shooting and all missiles are already in play
         if selectedCommand == .shoot,
            shootTargetEntities.count >= maxMissiles {
@@ -58,7 +78,7 @@ extension GameModel {
     }
     
     /// Calculate target from tap gesture
-    private func buildTarget(from tapEvent: EntityTargetValue<SpatialTapGesture.Value>) -> Target {
+    private func buildTarget(from tapEvent: EntityTargetValue<DragGesture.Value>) -> Target {
         return Target(
             posBattleground: tapEvent.convert(tapEvent.location3D, from: .local, to: .scene),
             posPlayfield: tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.root.parent!),
@@ -123,9 +143,9 @@ extension GameModel {
     private func buildNewEnvironmentTransform(_ environmentRoot: Entity, _ newPodiumBehavior: PodiumBehavior) -> Transform {
         var newTransform = environmentRoot.transform
         switch newPodiumBehavior {
-        case .floatLow: newTransform.translation = SIMD3<Float>(x: 0, y: 0, z: -8)
-        case .floatMid: newTransform.translation = SIMD3<Float>(x: 0, y: -2.5, z: -8)
-        case .floatHigh: newTransform.translation = SIMD3<Float>(x: 0, y: -5, z: -8)
+        case .floatLow: newTransform.translation = SIMD3<Float>(x: 0, y: 0, z: -10)
+        case .floatMid: newTransform.translation = SIMD3<Float>(x: 0, y: -3, z: -10)
+        case .floatHigh: newTransform.translation = SIMD3<Float>(x: 0, y: -6, z: -10)
         default: break
         }
         return newTransform

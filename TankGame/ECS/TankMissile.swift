@@ -9,6 +9,7 @@ import RealityKit
 import Foundation
 
 struct TankMissileComponent: Component {
+    let id: UUID = UUID()
     let velocityMps: Float = 2.5
     let commandId: TankCommand.ID
     var target: Target
@@ -22,22 +23,32 @@ class TankMissileSystem: System {
 
         let query = EntityQuery(where: .has(TankMissileComponent.self))
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
-            guard let missile = entity.components[TankMissileComponent.self] else { continue }
+            guard var missile = entity.components[TankMissileComponent.self] else { continue }
+            
+            // Take step toward target
             let target = missile.target.posPlayfield
-
             let direction = simd_normalize(target - entity.position)
             let stepDistance = missile.velocityMps * deltaTime
-
             let newPos = entity.position + direction * stepDistance
+            
             entity.position = newPos
 
-            // Stop if close enough to target
+            // Explode if close enough to target
             if simd_distance(newPos, target) < 0.015 {
-                entity.components.remove(TankMissileComponent.self)
-                entity.removeFromParent()
-                
-                GameModel.shared.handleMissleHit(missile.commandId)
+                handleMissileHit(entity, missile)
+                continue
             }
+            
+            // Explode if close enough to tank
+//            guard let enemyTank = GameModel.shared.enemyTank else { continue }
+//            handleMissileHit(entity, missile)
         }
+    }
+    
+    func handleMissileHit(_ entity: Entity, _ missile: TankMissileComponent) {
+        entity.components.remove(TankMissileComponent.self)
+        entity.removeFromParent()
+        
+        GameModel.shared.handleMissleHit(missile.commandId)
     }
 }

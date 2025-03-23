@@ -31,7 +31,7 @@ def Xform "Root"
             active = true
         )
         {
-            reorder nameChildren = ["Body", "BodyPaint"]
+            reorder nameChildren = ["BodyPaint", "Body"]
             float2 ui:nodegraph:node:pos = (33.23831, 471.47977)
             int ui:nodegraph:node:stackingOrder = 1
             quatf xformOp:orient = (1, 0, 0, 0)
@@ -48,6 +48,13 @@ def Xform "Root"
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0, 0)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                over "PreviewSurface"
+                {
+                    delete float inputs:metallic.connect = </Root/TankRoot/Body/BodyPaint/Metallic.outputs:out>
+                    int ui:nodegraph:node:stackingOrder = 2347
+                    string[] ui:nodegraph:realitykit:node:attributesShowingChildren = []
+                }
             }
 
             def Cube "Body" (
@@ -59,9 +66,11 @@ def Xform "Root"
                     bindMaterialAs = "weakerThanDescendants"
                 )
                 double size = 0.2
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (3, 0.66, 2)
-                float3 xformOp:translate = (0, 0.1, 0)
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 8.6850335e-8, 0)
+                float3 xformOp:scale = (5, 0.6599999, 3.5)
+                float3 xformOp:translate = (0, 0.099999994, 0)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
         }
@@ -70,46 +79,11 @@ def Xform "Root"
             active = true
         )
         {
-            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "ScratchedMetallicPaint"]
+            reorder nameChildren = ["WheelPaint", "ScratchedMetallicPaint", "Wheels"]
             quatf xformOp:orient = (1, 0, 0, 0)
             float3 xformOp:scale = (1, 1, 1)
             float3 xformOp:translate = (0, 0.05, 0)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-            def Capsule "Roadwheel" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-                customData = {
-                    float3 rotationEulerHint = (0, 0, 1.5707964)
-                }
-            )
-            {
-                uniform token axis = "Y"
-                double height = 0.2
-                rel material:binding = </Root/TankRoot/WheelsRight/ScratchedMetallicPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
-                float3 xformOp:scale = (0.7, 1.5, 0.5)
-                float3 xformOp:translate = (-2.7939677e-9, 0.0425, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (0.2, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
 
             def "WheelPaint" (
                 active = true
@@ -119,57 +93,6 @@ def Xform "Root"
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_1" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (0.07, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_2" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
-                int ui:nodegraph:node:stackingOrder = 2
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (-0.07, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_3" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (72.36331, 511.47977)
-                int ui:nodegraph:node:stackingOrder = 3
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (-0.2, 0, 0.2)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
 
@@ -182,54 +105,117 @@ def Xform "Root"
                     colorSpace = "srgb_displayp3"
                 )
             }
+
+            def Xform "Wheels" (
+                active = true
+            )
+            {
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 8.685033e-8, 0)
+                float3 xformOp:scale = (1.5, 1, 0.9999999)
+                float3 xformOp:translate = (0, 0, 0.15)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def Capsule "Roadwheel" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                    customData = {
+                        float3 rotationEulerHint = (0, 0, 1.5707964)
+                    }
+                )
+                {
+                    uniform token axis = "Y"
+                    double height = 0.2
+                    rel material:binding = </Root/TankRoot/WheelsRight/ScratchedMetallicPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    quatf xformOp:orient = (0.70710677, -4.2489138e-17, -4.2489118e-17, 0.70710677)
+                    float3 xformOp:scale = (0.69999987, 1.4999998, 0.49999994)
+                    float3 xformOp:translate = (-2.7939675e-9, 0.042499997, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (0.19999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_1" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
+                    int ui:nodegraph:node:stackingOrder = 1
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (0.06999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_2" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
+                    int ui:nodegraph:node:stackingOrder = 2
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (-0.07, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_3" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsRight/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (72.36331, 511.47977)
+                    int ui:nodegraph:node:stackingOrder = 3
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (-0.19999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+            }
         }
 
         def Xform "WheelsLeft" (
             active = true
         )
         {
-            reorder nameChildren = ["Roadwheel", "Wheel", "Wheel_1", "Wheel_2", "Wheel_3", "WheelPaint", "ScratchedMetallicPaint"]
+            reorder nameChildren = ["WheelPaint", "ScratchedMetallicPaint", "Wheels"]
             float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
             int ui:nodegraph:node:stackingOrder = 1
             quatf xformOp:orient = (1, 0, 0, 0)
             float3 xformOp:scale = (1, 1, 1)
             float3 xformOp:translate = (0, 0.05, -0.3894397)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-            def Capsule "Roadwheel" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-                customData = {
-                    float3 rotationEulerHint = (0, 0, 1.5707964)
-                }
-            )
-            {
-                uniform token axis = "Y"
-                double height = 0.2
-                rel material:binding = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
-                float3 xformOp:scale = (0.7, 1.5, 0.5)
-                float3 xformOp:translate = (-2.7939677e-9, 0.0425, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (0.2, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
 
             def "WheelPaint" (
                 active = true
@@ -239,57 +225,6 @@ def Xform "Root"
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
                 float3 xformOp:translate = (0, 0, 0)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_1" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
-                int ui:nodegraph:node:stackingOrder = 1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (0.07, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_2" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
-                int ui:nodegraph:node:stackingOrder = 2
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (-0.07, 0, 0.2)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-            }
-
-            def Sphere "Wheel_3" (
-                active = true
-                prepend apiSchemas = ["MaterialBindingAPI"]
-            )
-            {
-                rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
-                    bindMaterialAs = "weakerThanDescendants"
-                )
-                double radius = 0.1
-                float2 ui:nodegraph:node:pos = (72.36331, 511.47977)
-                int ui:nodegraph:node:stackingOrder = 3
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (0.6, 0.6, 0.6)
-                float3 xformOp:translate = (-0.2, 0, 0.2)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
             }
 
@@ -304,6 +239,104 @@ def Xform "Root"
                 token outputs:mtlx:surface.connect = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint/PreviewSurface.outputs:out>
                 float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
                 int ui:nodegraph:node:stackingOrder = 1
+            }
+
+            def Xform "Wheels" (
+                active = true
+            )
+            {
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+                quatf xformOp:orient = (1, 0, 8.685033e-8, 0)
+                float3 xformOp:scale = (1.5, 1, 0.9999999)
+                float3 xformOp:translate = (-3.4099244e-17, 0, -0.15)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+                def Capsule "Roadwheel" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                    customData = {
+                        float3 rotationEulerHint = (0, 0, 1.5707964)
+                    }
+                )
+                {
+                    uniform token axis = "Y"
+                    double height = 0.2
+                    rel material:binding = </Root/TankRoot/WheelsLeft/ScratchedMetallicPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    quatf xformOp:orient = (0.70710677, -4.2489138e-17, -4.2489118e-17, 0.70710677)
+                    float3 xformOp:scale = (0.69999987, 1.4999998, 0.49999994)
+                    float3 xformOp:translate = (-2.7939677e-9, 0.042499997, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (0.19999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_1" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (32.36331, 471.47977)
+                    int ui:nodegraph:node:stackingOrder = 1
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (0.06999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_2" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (52.36331, 491.47977)
+                    int ui:nodegraph:node:stackingOrder = 2
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (-0.07, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
+
+                def Sphere "Wheel_3" (
+                    active = true
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/TankRoot/WheelsLeft/WheelPaint> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                    double radius = 0.1
+                    float2 ui:nodegraph:node:pos = (72.36331, 511.47977)
+                    int ui:nodegraph:node:stackingOrder = 3
+                    quatf xformOp:orient = (1, 0, 4.0011872e-16, 0)
+                    float3 xformOp:scale = (0.59999996, 0.59999996, 0.59999996)
+                    float3 xformOp:translate = (-0.19999999, 0, 0.19999999)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+                }
             }
         }
 
@@ -388,7 +421,31 @@ def Xform "Root"
                     color3f inputs:Basecolor_Tint = (0.024134954, 0, 0.66982037) (
                         colorSpace = "srgb_displayp3"
                     )
+
+                    over "PreviewSurface"
+                    {
+                        delete float inputs:metallic.connect = </Root/TankRoot/Cannon/CannonRoot/ScratchedMetallicPaint/Metallic.outputs:out>
+                    }
                 }
+            }
+        }
+    }
+
+    def RealityKitComponent "Collider"
+    {
+        uint group = 1
+        uniform token info:id = "RealityKit.Collider"
+        uint mask = 4294967295
+        token type = "Default"
+
+        def RealityKitStruct "Shape"
+        {
+            float3 extent = (0.8449999, 0.26, 1)
+            token shapeType = "Box"
+
+            def RealityKitStruct "pose"
+            {
+                float3 position = (-0.012499943, 0.120000005, 0)
             }
         }
     }

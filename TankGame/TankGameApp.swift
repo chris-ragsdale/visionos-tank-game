@@ -2,7 +2,7 @@
 //  TankGameApp.swift
 //  TankGame
 //
-//  Created by Emily Elson on 3/8/25.
+//  Created by Emily Elson on 3/8/25. 
 //
 
 import SwiftUI
@@ -40,7 +40,7 @@ struct TankGameApp: App {
                     appModel.immersiveSpaceState = .closed
                 }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .immersionStyle(selection: .constant(.progressive(0.5...1.0, initialAmount: 1.0)), in: .progressive)
         
         // MARK: - Tank Controls Panel
         

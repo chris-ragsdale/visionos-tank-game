@@ -36,7 +36,7 @@ struct TankControlsPanel: View {
             
             // Tank Controls
             VStack {
-                Text("\(Image(systemName: "dot.scope")) Tank Command")
+                Text("\(Image(systemName: "scope")) Tank Command")
                 Picker("Tank Command", selection: $gameModel.selectedCommand) {
                     Text("move").tag(TankCommandType.move)
                     Text("shoot").tag(TankCommandType.shoot)
@@ -47,14 +47,18 @@ struct TankControlsPanel: View {
                 Spacer()
                 
                 // Missiles
-                HStack {
-                    let activeMissiles = gameModel.shootTargetEntities.count
-                    ForEach(0..<5) { missileNum in
-                        Image(systemName: "rectangle.portrait.fill")
-                            .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
+                VStack {
+                    HStack {
+                        let activeMissiles = gameModel.shootTargetEntities.count
+                        ForEach(0..<5) { missileNum in
+                            Image(systemName: "rectangle.portrait.fill")
+                                .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
+                        }
                     }
+                    .padding(.top, 2)
+                    
+                    Text("\(Image(systemName: "dot.scope")) Missiles")
                 }
-                .padding(.top, 2)
             }
             .padding()
             .glassBackgroundEffect()
