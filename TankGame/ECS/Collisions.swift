@@ -18,13 +18,14 @@ struct Collisions {
     let missileFilter: CollisionFilter
     
     init() {
+        let notGround = missileGroup.union(tankGroup)
         tankFilter = CollisionFilter(
             group: tankGroup,
-            mask: .all.subtracting(groundGroup)
+            mask: .all
         )
-        missileFilter  = CollisionFilter(
+        missileFilter = CollisionFilter(
             group: missileGroup,
-            mask: .all.subtracting(groundGroup)
+            mask: .all
         )
     }
 }
@@ -32,14 +33,12 @@ struct Collisions {
 extension Collisions {
     func configureTankCollisions(_ tankEntity: Entity) {
         guard var tankCollision = tankEntity.components[CollisionComponent.self] else { return }
-        tankCollision.mode = .trigger
         tankCollision.filter = Collisions.shared.tankFilter
         tankEntity.components.set(tankCollision)
     }
     
     func configureMissileCollisions(_ missileEntity: Entity) {
         guard var missileCollision = missileEntity.components[CollisionComponent.self] else { return }
-        missileCollision.mode = .trigger
         missileCollision.filter = Collisions.shared.missileFilter
         missileEntity.components.set(missileCollision)
     }

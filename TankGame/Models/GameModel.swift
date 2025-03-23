@@ -9,15 +9,18 @@ import SwiftUI
 import Observation
 import RealityKit
 import RealityKitContent
+import Combine
 
 /// Maintains game state & in-flight game entities
 @Observable class GameModel {
     static let shared = GameModel()
     
     func initEntities(_ entities: Entities) {
-        let (missileTemplate, battlegroundUSDA, playerTankRoot, environmentRoot, _, explosionEmitterEntity) = entities
+        let (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, _, explosionEmitterEntity) = entities
         
         tank = Tank(playerTankRoot, missileTemplate)
+        enemyTank = Tank(enemyTankRoot, missileTemplate)
+        
         self.environmentRoot = environmentRoot
         explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
         battlegroundBase.addChild(battlegroundUSDA)
@@ -25,6 +28,7 @@ import RealityKitContent
     
     // Battleground
     var battlegroundBase = Entity()
+    var collisionSubscriptions: [EventSubscription] = []
     
     // Tanks & Commands
     var tank: Tank?
@@ -107,17 +111,26 @@ extension GameModel {
         battlegroundBase.addChild(targetEntity)
     }
     
-    /// Remove missile target entity and create explosion
-    func handleMissleHit(_ commandId: TankCommand.ID) {
+    /// Remove missile &  target entity then create explosion
+    func handleMissileHit(_ missileEntity: Entity, _ missile: TankMissileComponent) {
+        // remove missile
+        missileEntity.components.remove(TankMissileComponent.self)
+        missileEntity.removeFromParent()
+        
         // remove target
-        guard let shootTargetEntity = shootTargetEntities.removeValue(forKey: commandId) else { return }
+        guard let shootTargetEntity = shootTargetEntities.removeValue(forKey: missile.commandId) else { return }
+        let shootTargetPosition = shootTargetEntity.position
         shootTargetEntity.removeFromParent()
         
+        addExplosion(shootTargetPosition)
+    }
+    
+    private func addExplosion(_ position: SIMD3<Float>) {
         // add explosion emitter
         guard var explosionEmitterComponent = explosionEmitter else { return }
         explosionEmitterComponent.restart()
         let explosionEntity = Entity()
-        explosionEntity.position = shootTargetEntity.position
+        explosionEntity.position = position
         explosionEntity.components[ParticleEmitterComponent.self] = explosionEmitterComponent
         explosionEntity.components[ExplosionComponent.self] = ExplosionComponent()
         battlegroundBase.addChild(explosionEntity)

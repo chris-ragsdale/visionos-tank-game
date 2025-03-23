@@ -76,6 +76,7 @@ extension Tank {
         // Build and place missile
         let missile = missileTemplate.clone(recursive: true)
         Collisions.shared.configureMissileCollisions(missile)
+        
         let missilePos = cannonShaft.convert(position: .zero, to: playfield)
         missile.position = missilePos
         

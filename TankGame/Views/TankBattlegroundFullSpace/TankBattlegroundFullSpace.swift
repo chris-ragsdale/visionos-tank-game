@@ -55,11 +55,26 @@ struct TankBattlegroundFullSpace: View {
         entities.playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
         entities.explosionEmitterEntity.removeFromParent()
         
+        // Add bg to view
+        content.add(gameModel.battlegroundBase)
+        
         // Save entities to game model
         gameModel.initEntities(entities)
         
-        // Add bg to view
-        content.add(gameModel.battlegroundBase)
+        let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: gameModel.tank!.root) { event in
+            print("Player Tank Hit!")
+            print("entityA: \(event.entityA.name)")
+            print("entityB: \(event.entityB.name)")
+            print("-+-+-+-+-+-+-")
+        }
+        let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: gameModel.enemyTank!.root) { event in
+            print("Enemy Tank Hit!")
+            print("entityA: \(event.entityA.name)")
+            print("entityB: \(event.entityB.name)")
+            print("-+-+-+-+-+-+-")
+        }
+        gameModel.collisionSubscriptions.append(playerTankSub)
+        gameModel.collisionSubscriptions.append(enemyTankSub)
     }
     
     func loadEntities() async -> Entities? {
@@ -72,6 +87,7 @@ struct TankBattlegroundFullSpace: View {
         
         // Load entities from battleground
         guard let playerTankRoot = battlegroundUSDA.findEntity(named: "PlayerTank"),
+              let enemyTankRoot = battlegroundUSDA.findEntity(named: "EnemyTank"),
               let environmentRoot = battlegroundUSDA.findEntity(named: "EnvironmentRoot"),
               let playfieldGround = battlegroundUSDA.findEntity(named: "PlayfieldGround"),
               let explosionEmitterEntity = battlegroundUSDA.findEntity(named: "ExplosionEmitter") else {
@@ -79,7 +95,7 @@ struct TankBattlegroundFullSpace: View {
             return nil
         }
         
-        return (missileTemplate, battlegroundUSDA, playerTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
+        return (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
     }
 }
 
@@ -87,6 +103,7 @@ typealias Entities = (
     missileTemplate: Entity,
     battlegroundUSDA: Entity,
     playerTankRoot: Entity,
+    enemyTankRoot: Entity,
     environmentRoot: Entity,
     playfieldGround: Entity,
     explosionEmitterEntity: Entity

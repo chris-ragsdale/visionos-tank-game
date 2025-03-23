@@ -13,6 +13,7 @@ struct TankMissileComponent: Component {
     let velocityMps: Float = 2.5
     let commandId: TankCommand.ID
     var target: Target
+    var firstUpdate: Bool = true
 }
 
 class TankMissileSystem: System {
@@ -25,6 +26,13 @@ class TankMissileSystem: System {
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
             guard var missile = entity.components[TankMissileComponent.self] else { continue }
             
+            // Skip first update - prevents shoot forward when moving after not moving for a while
+            if missile.firstUpdate {
+                missile.firstUpdate = false
+                entity.components.set(missile)
+                continue
+            }
+            
             // Take step toward target
             let target = missile.target.posPlayfield
             let direction = simd_normalize(target - entity.position)
@@ -35,7 +43,7 @@ class TankMissileSystem: System {
 
             // Explode if close enough to target
             if simd_distance(newPos, target) < 0.015 {
-                handleMissileHit(entity, missile)
+                GameModel.shared.handleMissileHit(entity, missile)
                 continue
             }
             
@@ -43,12 +51,5 @@ class TankMissileSystem: System {
 //            guard let enemyTank = GameModel.shared.enemyTank else { continue }
 //            handleMissileHit(entity, missile)
         }
-    }
-    
-    func handleMissileHit(_ entity: Entity, _ missile: TankMissileComponent) {
-        entity.components.remove(TankMissileComponent.self)
-        entity.removeFromParent()
-        
-        GameModel.shared.handleMissleHit(missile.commandId)
     }
 }
