@@ -18,7 +18,6 @@ struct Collisions {
     let missileFilter: CollisionFilter
     
     init() {
-        let notGround = missileGroup.union(tankGroup)
         tankFilter = CollisionFilter(
             group: tankGroup,
             mask: .all

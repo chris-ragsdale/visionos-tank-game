@@ -10,7 +10,8 @@
 
 def Xform "Root"
 {
-    def Xform "Missile" (
+    reorder nameChildren = ["MissileRoot", "ParticleEmitter", "Collider"]
+    def Xform "MissileRoot" (
         active = true
     )
     {
@@ -29,25 +30,6 @@ def Xform "Root"
             float3 xformOp:scale = (1, 1, 1)
             float3 xformOp:translate = (0, 0, 0)
             uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-        }
-
-        def RealityKitComponent "Collider"
-        {
-            uint group = 1
-            uniform token info:id = "RealityKit.Collider"
-            uint mask = 4294967295
-            token type = "Default"
-
-            def RealityKitStruct "Shape"
-            {
-                float3 extent = (0.06724952, 0.06815122, 0.25023687)
-                token shapeType = "Box"
-
-                def RealityKitStruct "pose"
-                {
-                    float3 position = (0.000003958121, -0.00079379417, 0.12511843)
-                }
-            }
         }
     }
 

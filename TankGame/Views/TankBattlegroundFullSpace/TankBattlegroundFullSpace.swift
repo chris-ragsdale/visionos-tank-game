@@ -52,29 +52,13 @@ struct TankBattlegroundFullSpace: View {
     func initBattleground(_ content: RealityViewContent) async {
         // Load and configure entities
         guard let entities = await loadEntities() else { return }
-        entities.playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
-        entities.explosionEmitterEntity.removeFromParent()
         
         // Add bg to view
         content.add(gameModel.battlegroundBase)
         
-        // Save entities to game model
+        // Init game model
         gameModel.initEntities(entities)
-        
-        let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: gameModel.tank!.root) { event in
-            print("Player Tank Hit!")
-            print("entityA: \(event.entityA.name)")
-            print("entityB: \(event.entityB.name)")
-            print("-+-+-+-+-+-+-")
-        }
-        let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: gameModel.enemyTank!.root) { event in
-            print("Enemy Tank Hit!")
-            print("entityA: \(event.entityA.name)")
-            print("entityB: \(event.entityB.name)")
-            print("-+-+-+-+-+-+-")
-        }
-        gameModel.collisionSubscriptions.append(playerTankSub)
-        gameModel.collisionSubscriptions.append(enemyTankSub)
+        gameModel.initCollisionSubs(content)
     }
     
     func loadEntities() async -> Entities? {
@@ -94,6 +78,10 @@ struct TankBattlegroundFullSpace: View {
             print("Failed to unpack battleground USDA")
             return nil
         }
+        
+        // Configure entities
+        playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
+        explosionEmitterEntity.removeFromParent()
         
         return (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
     }

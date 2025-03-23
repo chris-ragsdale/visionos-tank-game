@@ -74,7 +74,8 @@ extension Tank {
     
     private func buildMissile(_ playfield: Entity, _ command: TankCommand) -> Entity {
         // Build and place missile
-        let missile = missileTemplate.clone(recursive: true)
+        let missile = missileTemplate.clone(recursive: true).children[0]
+        missile.name = "Missile"
         Collisions.shared.configureMissileCollisions(missile)
         
         let missilePos = cannonShaft.convert(position: .zero, to: playfield)
