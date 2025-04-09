@@ -16,16 +16,6 @@
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
-        "EnvironmentRoot",
-        "SkyDome"
-      ],
-      {
-        "isExpanded" : false,
-        "isLocked" : true
-      },
-      [
-        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
-        "Root",
         "Platform"
       ],
       {
@@ -36,22 +26,11 @@
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
         "EnvironmentRoot",
-        "Playfield",
-        "PlayerTank"
-      ],
-      {
-        "isExpanded" : false,
-        "isLocked" : true
-      },
-      [
-        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
-        "Root",
-        "EnvironmentRoot",
         "Playfield"
       ],
       {
         "isExpanded" : true,
-        "isLocked" : true
+        "isLocked" : false
       },
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",

@@ -30,7 +30,7 @@ def Xform "Root"
             def RealityKitComponent "DirectionalLight"
             {
                 token info:id = "RealityKit.DirectionalLight"
-                float intensity = 7000
+                float intensity = 5000
 
                 def RealityKitStruct "Shadow"
                 {
@@ -58,7 +58,7 @@ def Xform "Root"
 
                     over "DomeMAT"
                     {
-                        color3f inputs:diffuseColor = (0.69501656, 0.06107208, 0.030839674) (
+                        color3f inputs:diffuseColor = (0.4107481, 0.035188876, 0.019802732) (
                             colorSpace = "srgb_displayp3"
                         )
                         color3f inputs:emissiveColor = (0.2938368, 0.2938368, 0.2938368) (
@@ -242,7 +242,7 @@ def Xform "Root"
             {
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0.145, 5)
+                float3 xformOp:translate = (0, 0.145, 4)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
                 over "TankRoot"
@@ -492,7 +492,7 @@ def Xform "Root"
                 int ui:nodegraph:node:stackingOrder = 1
                 quatf xformOp:orient = (1, 0, 0, 0)
                 float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0.145, 0)
+                float3 xformOp:translate = (0, 0.145, -4)
                 uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
                 over "TankRoot"
@@ -559,7 +559,7 @@ def Xform "Root"
             def RealityKitComponent "DirectionalLight"
             {
                 token info:id = "RealityKit.DirectionalLight"
-                float intensity = 7000
+                float intensity = 5000
 
                 def RealityKitStruct "Shadow"
                 {

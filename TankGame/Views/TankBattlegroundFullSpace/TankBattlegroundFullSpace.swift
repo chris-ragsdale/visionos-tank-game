@@ -28,7 +28,7 @@ struct TankBattlegroundFullSpace: View {
             await initBattleground(content, attachments)
         } attachments: {
             Attachment(id: "PlayerTankHealth") {
-                TankHealth(health: gameModel.tank?.health)
+                TankHealth(health: gameModel.playerTank?.health)
             }
             Attachment(id: "EnemyTankHealth") {
                 TankHealth(health: gameModel.enemyTank?.health)
@@ -55,36 +55,50 @@ struct TankBattlegroundFullSpace: View {
             }
         }
     }
-    
+}
+
+typealias Entities = (
+    missileTemplate: Entity,
+    battlegroundBase: Entity,
+    playerTankRoot: Entity,
+    enemyTankRoot: Entity,
+    environmentRoot: Entity,
+    playfield: Entity,
+    playfieldGround: Entity,
+    explosionEmitterEntity: Entity
+)
+
+extension TankBattlegroundFullSpace {
     func initBattleground(_ content: RealityViewContent, _ attachments: RealityViewAttachments) async {
         // Load and configure entities
         guard let entities = await loadEntities() else { return }
-        
-        // Add bg to view
-        content.add(gameModel.battlegroundBase)
         
         // Init game model
         gameModel.initEntities(entities)
         gameModel.initCollisionSubs(content)
         
+        // Add bg to view
+        content.add(gameModel.battlegroundBase)
+        
         // Configure tank health attachments
         configureTankHealthAttachments(attachments)
     }
     
-    func loadEntities() async -> Entities? {
+    private func loadEntities() async -> Entities? {
         // Load USDAs
         guard let missileTemplate = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle),
-              let battlegroundUSDA = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
+              let battlegroundBase = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
             print("Failed to load USDAs")
             return nil
         }
         
         // Load entities from battleground
-        guard let playerTankRoot = battlegroundUSDA.findEntity(named: "PlayerTank"),
-              let enemyTankRoot = battlegroundUSDA.findEntity(named: "EnemyTank"),
-              let environmentRoot = battlegroundUSDA.findEntity(named: "EnvironmentRoot"),
-              let playfieldGround = battlegroundUSDA.findEntity(named: "PlayfieldGround"),
-              let explosionEmitterEntity = battlegroundUSDA.findEntity(named: "ExplosionEmitter") else {
+        guard let playerTankRoot = battlegroundBase.findEntity(named: "PlayerTank"),
+              let enemyTankRoot = battlegroundBase.findEntity(named: "EnemyTank"),
+              let environmentRoot = battlegroundBase.findEntity(named: "EnvironmentRoot"),
+              let playfield = battlegroundBase.findEntity(named: "Playfield"),
+              let playfieldGround = battlegroundBase.findEntity(named: "PlayfieldGround"),
+              let explosionEmitterEntity = battlegroundBase.findEntity(named: "ExplosionEmitter") else {
             print("Failed to unpack battleground USDA")
             return nil
         }
@@ -93,12 +107,12 @@ struct TankBattlegroundFullSpace: View {
         playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
         explosionEmitterEntity.removeFromParent()
         
-        return (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, playfieldGround, explosionEmitterEntity)
+        return (missileTemplate, battlegroundBase, playerTankRoot, enemyTankRoot, environmentRoot, playfield, playfieldGround, explosionEmitterEntity)
     }
     
-    func configureTankHealthAttachments(_ attachments: RealityViewAttachments) {
+    private func configureTankHealthAttachments(_ attachments: RealityViewAttachments) {
         if let playerHealthAttachment = attachments.entity(for: "PlayerTankHealth"),
-           let playerHealthAttachmentRoot = gameModel.tank?.root.findEntity(named: "HealthAttachment") {
+           let playerHealthAttachmentRoot = gameModel.playerTank?.root.findEntity(named: "HealthAttachment") {
             playerHealthAttachment.components.set(BillboardComponent())
             playerHealthAttachmentRoot.addChild(playerHealthAttachment)
         }
@@ -110,16 +124,6 @@ struct TankBattlegroundFullSpace: View {
         }
     }
 }
-
-typealias Entities = (
-    missileTemplate: Entity,
-    battlegroundUSDA: Entity,
-    playerTankRoot: Entity,
-    enemyTankRoot: Entity,
-    environmentRoot: Entity,
-    playfieldGround: Entity,
-    explosionEmitterEntity: Entity
-)
 
 #Preview(immersionStyle: .progressive) {
     TankBattlegroundFullSpace()

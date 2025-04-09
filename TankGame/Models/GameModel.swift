@@ -16,27 +16,30 @@ import Combine
     static let shared = GameModel()
     
     func initEntities(_ entities: Entities) {
-        let (missileTemplate, battlegroundUSDA, playerTankRoot, enemyTankRoot, environmentRoot, _, explosionEmitterEntity) = entities
+        let (missileTemplate, battlegroundBase, playerTankRoot, enemyTankRoot, environmentRoot, playfield, _, explosionEmitterEntity) = entities
         
-        tank = Tank(playerTankRoot, missileTemplate)
+        playerTank = Tank(playerTankRoot, missileTemplate)
         enemyTank = Tank(enemyTankRoot, missileTemplate)
         
         self.environmentRoot = environmentRoot
         explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
-        battlegroundBase.addChild(battlegroundUSDA)
+        self.playfield = playfield
+        self.battlegroundBase = battlegroundBase
     }
     
     // Battleground
+    
     var battlegroundBase = Entity()
+    var playfield = Entity()
     var collisionSubscriptions: [EventSubscription] = []
     
     func initCollisionSubs(_ content: RealityViewContent) {
-        guard let tankRoot = tank?.root,
+        guard let playerTankRoot = playerTank?.root,
               let enemyTankRoot = enemyTank?.root else {
             fatalError("Failed to init collision subs, no tank roots")
         }
         
-        let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: tankRoot) { event in
+        let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: playerTankRoot) { event in
             print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
         }
         let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: enemyTankRoot) { event in
@@ -51,22 +54,25 @@ import Combine
     }
     
     // Tanks
-    var tank: Tank?
+    
+    var playerTank: Tank?
     var enemyTank: Tank?
     
     // Commands
+    
     var selectedCommand: TankCommandType = .move
     var tankCommands: [TankCommand] = [] {
         didSet {
             // Issue command to tank on add
             guard let nextCommand = tankCommands.last else { return }
-            if let newMissile = tank?.handleNextCommand(nextCommand) {
+            if let newMissile = playerTank?.handleNextCommand(nextCommand) {
                 addMissileEntity(newMissile)
             }
         }
     }
     
     // Move Target
+    
     var moveTargetEntity: Entity?
     
     func setMoveTargetEntity(_ entity: Entity) {
@@ -75,6 +81,7 @@ import Combine
     }
     
     // Missile Targets
+    
     var missileTargetEntities: [TankCommand.ID: Entity] = [:]
     
     func addMissileTargetEntity(_ id: TankCommand.ID, _ entity: Entity) {
@@ -88,6 +95,7 @@ import Combine
     }
     
     // Missiles
+    
     let maxMissiles = 5
     var explosionEmitter: ParticleEmitterComponent?
     var missileEntities: [UUID: Entity] = [:]
@@ -105,6 +113,7 @@ import Combine
     }
     
     // Podium
+    
     var podiumBehavior: PodiumBehavior = .floatMid
     var environmentRoot: Entity?
 }
@@ -121,7 +130,7 @@ extension GameModel {
         }
         
         // Issue command and visualize target
-        let target = Target(tapEvent, tank)
+        let target = Target(tapEvent, playerTank)
         let command = TankCommand(commandType: selectedCommand, target: target)
         tankCommands.append(command)
         addTargetEntity(target, command.id)
@@ -135,21 +144,31 @@ extension GameModel {
             mesh: .generateSphere(radius: 0.1),
             materials: [UnlitMaterial(color: targetEntityColor)]
         )
-        targetEntity.setPosition(target.posBattleground, relativeTo: nil)
+        targetEntity.setPosition(target.posPlayfield, relativeTo: nil)
         
         // Add to scene
         switch selectedCommand {
         case .move:  setMoveTargetEntity(targetEntity)
         case .shoot: addMissileTargetEntity(id, targetEntity)
         }
-        battlegroundBase.addChild(targetEntity)
+        playfield.addChild(targetEntity)
     }
     
     /// Damage tank (if present), remove missile & target entity, then create explosion
-    func handleMissileHit(_ missile: TankMissileComponent, _ tank: Tank? = nil) {
-        tank?.damage()
+    func handleMissileHit(_ missile: TankMissileComponent, _ hitTank: Tank? = nil) {
+        // Damage tank
+        if let hitTank {
+            hitTank.damage()
+            if !hitTank.health.isAlive {
+                let tankPosition = hitTank.root.convert(position: .zero, to: playfield)
+                addExplosion(tankPosition, scale: 3)
+                
+                hitTank.root.removeFromParent()
+            }
+        }
         
-        let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: nil)
+        // Explode missile
+        let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: playfield)
         
         let _ = removeMissileEntity(missile.id)
         let _ = removeMissileTargetEntity(missile.commandId)
@@ -159,15 +178,16 @@ extension GameModel {
         }
     }
     
-    private func addExplosion(_ position: SIMD3<Float>) {
+    private func addExplosion(_ position: SIMD3<Float>, scale: Float = 1.0) {
         // add explosion emitter
         guard var explosionEmitterComponent = explosionEmitter else { return }
         explosionEmitterComponent.restart()
         let explosionEntity = Entity()
         explosionEntity.position = position
+        explosionEntity.scale = .init(repeating: scale)
         explosionEntity.components[ParticleEmitterComponent.self] = explosionEmitterComponent
         explosionEntity.components[ExplosionComponent.self] = ExplosionComponent()
-        battlegroundBase.addChild(explosionEntity)
+        playfield.addChild(explosionEntity)
         
         // remove explosion in 2s
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

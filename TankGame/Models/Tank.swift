@@ -40,16 +40,14 @@ struct Health {
 
 extension Tank {
     func damage() {
+        guard health.isAlive else { return }
+        
         health.current -= 1
         print("Ouch! New health: \(health.current)/\(health.capacity)")
         
         if !health.isAlive {
             print("Dead!")
         }
-    }
-    
-    private func destroy() {
-        
     }
 }
 
