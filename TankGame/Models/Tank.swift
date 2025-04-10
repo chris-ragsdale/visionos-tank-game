@@ -9,6 +9,7 @@ import SwiftUI
 import Observation
 import RealityKit
 import RealityKitContent
+import Foundation
 
 struct Health {
     let capacity: Int
@@ -17,7 +18,8 @@ struct Health {
     var isAlive: Bool { current > 0 }
 }
 
-@Observable class Tank {
+@Observable class Tank: Identifiable {
+    let id = UUID()
     var health = Health(capacity: 5, current: 5)
     
     // Entities

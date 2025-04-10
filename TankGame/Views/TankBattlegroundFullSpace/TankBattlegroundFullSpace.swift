@@ -30,8 +30,10 @@ struct TankBattlegroundFullSpace: View {
             Attachment(id: "PlayerTankHealth") {
                 TankHealth(health: gameModel.playerTank?.health)
             }
-            Attachment(id: "EnemyTankHealth") {
-                TankHealth(health: gameModel.enemyTank?.health)
+            ForEach(gameModel.enemyTanks) { enemyTank in
+                Attachment(id: "EnemyTankHealth-\(enemyTank.id)") {
+                    TankHealth(health: enemyTank.health)
+                }
             }
         }
         .simultaneousGesture(
@@ -57,48 +59,30 @@ struct TankBattlegroundFullSpace: View {
     }
 }
 
-typealias Entities = (
-    missileTemplate: Entity,
-    battlegroundBase: Entity,
-    playerTankRoot: Entity,
-    enemyTankRoot: Entity,
-    environmentRoot: Entity,
-    playfield: Entity,
-    playfieldGround: Entity,
-    explosionEmitterEntity: Entity
-)
-
 extension TankBattlegroundFullSpace {
     func initBattleground(_ content: RealityViewContent, _ attachments: RealityViewAttachments) async {
-        // Load and configure entities
+        // Init entities
         guard let entities = await loadEntities() else { return }
-        
-        // Init game model
-        gameModel.initEntities(entities)
-        gameModel.initCollisionSubs(content)
-        
-        // Add bg to view
+        gameModel.initBattlegroundEntities(entities)
         content.add(gameModel.battlegroundBase)
         
-        // Configure tank health attachments
-        configureTankHealthAttachments(attachments)
+        // Configure attachments and collisions
+        configureAttachments(content, attachments)
+        gameModel.initCollisionSubs(content)
     }
     
     private func loadEntities() async -> Entities? {
         // Load USDAs
-        guard let missileTemplate = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle),
-              let battlegroundBase = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
+        guard let battlegroundBase = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
             print("Failed to load USDAs")
             return nil
         }
         
         // Load entities from battleground
-        guard let playerTankRoot = battlegroundBase.findEntity(named: "PlayerTank"),
-              let enemyTankRoot = battlegroundBase.findEntity(named: "EnemyTank"),
-              let environmentRoot = battlegroundBase.findEntity(named: "EnvironmentRoot"),
-              let playfield = battlegroundBase.findEntity(named: "Playfield"),
-              let playfieldGround = battlegroundBase.findEntity(named: "PlayfieldGround"),
-              let explosionEmitterEntity = battlegroundBase.findEntity(named: "ExplosionEmitter") else {
+          guard let environmentRoot = battlegroundBase.findEntity(named: "EnvironmentRoot"),
+                let playfield = battlegroundBase.findEntity(named: "Playfield"),
+                let playfieldGround = battlegroundBase.findEntity(named: "PlayfieldGround"),
+                let explosionEmitterEntity = battlegroundBase.findEntity(named: "ExplosionEmitter") else {
             print("Failed to unpack battleground USDA")
             return nil
         }
@@ -107,21 +91,25 @@ extension TankBattlegroundFullSpace {
         playfieldGround.components[HoverEffectComponent.self] = HoverEffectComponent(.spotlight(.init(color: .white, strength: 1)))
         explosionEmitterEntity.removeFromParent()
         
-        return (missileTemplate, battlegroundBase, playerTankRoot, enemyTankRoot, environmentRoot, playfield, playfieldGround, explosionEmitterEntity)
+        return (battlegroundBase, environmentRoot, playfield, playfieldGround, explosionEmitterEntity)
     }
     
-    private func configureTankHealthAttachments(_ attachments: RealityViewAttachments) {
-        if let playerHealthAttachment = attachments.entity(for: "PlayerTankHealth"),
-           let playerHealthAttachmentRoot = gameModel.playerTank?.root.findEntity(named: "HealthAttachment") {
-            playerHealthAttachment.components.set(BillboardComponent())
-            playerHealthAttachmentRoot.addChild(playerHealthAttachment)
+    func configureAttachments(_ content: RealityViewContent, _ attachments: RealityViewAttachments) {
+        if let playerTank = gameModel.playerTank {
+            attachTankHealth("PlayerTankHealth", playerTank, attachments)
+            for enemyTank in gameModel.enemyTanks {
+                attachTankHealth("EnemyTankHealth-\(enemyTank.id)", enemyTank, attachments)
+            }
         }
-        
-        if let enemyHealthAttachment = attachments.entity(for: "EnemyTankHealth"),
-           let enemyHealthAttachmentRoot = gameModel.enemyTank?.root.findEntity(named: "HealthAttachment") {
-            enemyHealthAttachment.components.set(BillboardComponent())
-            enemyHealthAttachmentRoot.addChild(enemyHealthAttachment)
+    }
+    
+    private func attachTankHealth(_ attachmentName: String, _ tank: Tank, _ attachments: RealityViewAttachments) {
+        guard let healthAttachment = attachments.entity(for: attachmentName),
+              let healthAttachmentRoot = tank.root.findEntity(named: "HealthAttachment") else {
+            return
         }
+        healthAttachment.components.set(BillboardComponent())
+        healthAttachmentRoot.addChild(healthAttachment)
     }
 }
 

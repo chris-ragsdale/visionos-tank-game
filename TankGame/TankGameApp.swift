@@ -20,6 +20,7 @@ struct TankGameApp: App {
         WindowGroup {
             MainWindow()
                 .environment(appModel)
+                .environment(gameModel)
                 .frame(
                     minWidth: 800, maxWidth: 800,
                     minHeight: 600, maxHeight: 600

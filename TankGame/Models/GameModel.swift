@@ -11,52 +11,105 @@ import RealityKit
 import RealityKitContent
 import Combine
 
+typealias Entities = (
+    battlegroundBase: Entity,
+    environmentRoot: Entity,
+    playfield: Entity,
+    playfieldGround: Entity,
+    explosionEmitterEntity: Entity
+)
+
 /// Maintains game state & in-flight game entities
 @Observable class GameModel {
     static let shared = GameModel()
     
-    func initEntities(_ entities: Entities) {
-        let (missileTemplate, battlegroundBase, playerTankRoot, enemyTankRoot, environmentRoot, playfield, _, explosionEmitterEntity) = entities
+    init() {
+        Task {
+            self.missileTemplate = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle)
+            self.tankTemplate = try? await Entity(named: "Tank/Tank", in: realityKitContentBundle)
+        }
+    }
+    
+    // Level
+    
+    var level: Level?
+    var collisionSubscriptions: [EventSubscription] = []
+    
+    func loadLevel(_ level: Level) {
+        self.level = level
         
-        playerTank = Tank(playerTankRoot, missileTemplate)
-        enemyTank = Tank(enemyTankRoot, missileTemplate)
+        // Build player
+        playerTank = buildTank(level.playerStart)
         
-        self.environmentRoot = environmentRoot
-        explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
-        self.playfield = playfield
-        self.battlegroundBase = battlegroundBase
+        // Build enemies
+        enemyTanks = []
+        for enemyTankPosition in level.enemyStarts {
+            guard let enemy = buildTank(enemyTankPosition) else { continue }
+            enemyTanks.append(enemy)
+        }
+    }
+    
+    private func buildTank(_ position: SIMD3<Float>) -> Tank? {
+        guard let tankTemplate, let missileTemplate else {
+            print("Failed to build tank, entity templates not yet available")
+            return nil
+        }
+        
+        let tankEntity = tankTemplate.clone(recursive: true).children[0]
+        tankEntity.position = position
+        return Tank(tankEntity, missileTemplate)
+    }
+    
+    func initCollisionSubs(_ content: RealityViewContent) {
+        // Player collisions
+        if let playerTank {
+            let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: playerTank.root) { event in
+                print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
+            }
+            collisionSubscriptions.append(playerTankSub)
+        }
+        
+        // Enemy collisions
+        for enemyTank in enemyTanks {
+            let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: enemyTank.root) { event in
+                print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
+                
+                // Handle missile collision
+                guard let missile = event.entityB.components[TankMissileComponent.self] else { return }
+                self.handleMissileHit(missile, enemyTank)
+            }
+            collisionSubscriptions.append(enemyTankSub)
+        }
     }
     
     // Battleground
     
     var battlegroundBase = Entity()
     var playfield = Entity()
-    var collisionSubscriptions: [EventSubscription] = []
     
-    func initCollisionSubs(_ content: RealityViewContent) {
-        guard let playerTankRoot = playerTank?.root,
-              let enemyTankRoot = enemyTank?.root else {
-            fatalError("Failed to init collision subs, no tank roots")
-        }
+    func initBattlegroundEntities(_ entities: Entities) {
+        // Save received entities
+        let (battlegroundBase, environmentRoot, playfield, _, explosionEmitterEntity) = entities
         
-        let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: playerTankRoot) { event in
-            print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
+        self.environmentRoot = environmentRoot
+        self.explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
+        self.playfield = playfield
+        self.battlegroundBase = battlegroundBase
+        
+        // Add tanks to playfield
+        if let playerTank {
+            self.playfield.addChild(playerTank.root)
+            for enemyTank in enemyTanks {
+                self.playfield.addChild(enemyTank.root)
+            }
         }
-        let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: enemyTankRoot) { event in
-            print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
-            
-            // Handle missile collision
-            guard let missile = event.entityB.components[TankMissileComponent.self] else { return }
-            self.handleMissileHit(missile, self.enemyTank)
-        }
-        collisionSubscriptions.append(playerTankSub)
-        collisionSubscriptions.append(enemyTankSub)
     }
     
     // Tanks
     
+    var tankTemplate: Entity?
     var playerTank: Tank?
-    var enemyTank: Tank?
+    var enemyTanks: [Tank] = []
     
     // Commands
     
@@ -96,7 +149,8 @@ import Combine
     
     // Missiles
     
-    let maxMissiles = 5
+    let maxMissiles = 3
+    var missileTemplate: Entity?
     var explosionEmitter: ParticleEmitterComponent?
     var missileEntities: [UUID: Entity] = [:]
     

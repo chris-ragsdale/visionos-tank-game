@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+struct Level: Identifiable, Equatable {
+    typealias ID = Int
+    
+    let id: ID
+    let name: String
+    let description: LocalizedStringKey
+    let playerStart: SIMD3<Float>
+    let enemyStarts: [SIMD3<Float>]
+    var winConditions: [WinCondition]
+    var completionState: CompletionState = .notStarted
+}
+
 enum CompletionState {
     case notStarted
     case inProgress
@@ -28,11 +40,7 @@ enum CompletionState {
     }
 }
 
-struct Level: Identifiable, Equatable {
-    typealias ID = Int
-    
-    let id: ID
-    let name: String
-    let description: LocalizedStringKey
-    let completionState: CompletionState = .notStarted
+enum WinCondition: Equatable {
+    case enemiesKilled(Bool)
+    case tankMoved(Bool)
 }

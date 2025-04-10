@@ -13,6 +13,7 @@ struct ToggleLevelButton: View {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openWindow) private var openWindow
     @Environment(AppModel.self) private var appModel
+    @Environment(GameModel.self) private var gameModel
     
     var level: Level
     
@@ -29,12 +30,18 @@ struct ToggleLevelButton: View {
             NavigationLink(value: level.id, label: {
                 Button(level.name, action: {
                     appModel.setSelectedLevel(level.id)
+                    loadLevel(level.id)
                     openWindow(id: appModel.tankControlsPanelID)
                     toggleImmersiveSpace()
                 })
             })
             .buttonStyle(.plain)
         }
+    }
+    
+    func loadLevel(_ id: Level.ID) {
+        let level = appModel.levels[id]
+        gameModel.loadLevel(level)
     }
 }
 

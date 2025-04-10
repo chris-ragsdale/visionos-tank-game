@@ -233,7 +233,7 @@ def Xform "Root"
             }
 
             def "PlayerTank" (
-                active = true
+                active = false
                 customData = {
                     float3 rotationEulerHint = (0, 0, 0)
                 }
@@ -481,7 +481,7 @@ def Xform "Root"
             }
 
             def "EnemyTank" (
-                active = true
+                active = false
                 customData = {
                     float3 rotationEulerHint = (0, 0, 0)
                 }

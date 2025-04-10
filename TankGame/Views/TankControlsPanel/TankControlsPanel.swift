@@ -52,7 +52,7 @@ struct TankControlsPanel: View {
                         Text("\(Image(systemName: "dot.scope"))")
                         
                         let activeMissiles = gameModel.missileTargetEntities.count
-                        ForEach(0..<5) { missileNum in
+                        ForEach(0..<3) { missileNum in
                             Image(systemName: "rectangle.portrait.fill")
                                 .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
                         }
