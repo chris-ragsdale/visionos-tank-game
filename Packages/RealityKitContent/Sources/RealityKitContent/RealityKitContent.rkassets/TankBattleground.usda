@@ -12,7 +12,7 @@ def Xform "Root"
         active = true
     )
     {
-        reorder nameChildren = ["PlayfieldOld", "SkyDome", "Ground", "Playfield", "DirectionalLight"]
+        reorder nameChildren = ["SkyDome", "Ground", "FullSpaceTerrain", "Playfield", "DirectionalLight_1", "DirectionalLight"]
         float3 xformOp:translate = (0, -2.5, -10)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
@@ -99,50 +99,6 @@ def Xform "Root"
                 active = false
             )
             {
-            }
-        }
-
-        def Cube "Ground" (
-            active = true
-            prepend apiSchemas = ["MaterialBindingAPI"]
-        )
-        {
-            reorder nameChildren = ["BrownMerinoWool", "Material"]
-            rel material:binding = </Root/EnvironmentRoot/Ground/Material> (
-                bindMaterialAs = "weakerThanDescendants"
-            )
-            double size = 10
-            quatf xformOp:orient = (1, 0, 0, 0)
-            float3 xformOp:scale = (12, 0.01, 12)
-            float3 xformOp:translate = (0, 0, 0)
-            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-            def "BrownMerinoWool" (
-                active = false
-                references = @BrownMerinoWool.usdz@
-            )
-            {
-                color3f inputs:Basecolor_Tint = (0.640408, 0.47749925, 0.055819876) (
-                    colorSpace = "srgb_displayp3"
-                )
-                float2 inputs:UV_Scale = (10, 10)
-            }
-
-            def Material "Material"
-            {
-                token outputs:mtlx:surface
-                token outputs:realitykit:vertex
-                token outputs:surface.connect = </Root/EnvironmentRoot/Ground/Material/UsdPreviewSurface.outputs:surface>
-
-                def Shader "UsdPreviewSurface"
-                {
-                    uniform token info:id = "UsdPreviewSurface"
-                    color3f inputs:diffuseColor = (0.39023042, 0.27827176, 0.11389024) (
-                        colorSpace = "srgb_displayp3"
-                    )
-                    float inputs:roughness = 0.9
-                    token outputs:surface
-                }
             }
         }
 
@@ -479,68 +435,6 @@ def Xform "Root"
                     }
                 }
             }
-
-            def "EnemyTank" (
-                active = false
-                customData = {
-                    float3 rotationEulerHint = (0, 0, 0)
-                }
-                references = @Tank/Tank.usda@
-            )
-            {
-                float2 ui:nodegraph:node:pos = (20, 20)
-                int ui:nodegraph:node:stackingOrder = 1
-                quatf xformOp:orient = (1, 0, 0, 0)
-                float3 xformOp:scale = (1, 1, 1)
-                float3 xformOp:translate = (0, 0.145, -4)
-                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-                over "TankRoot"
-                {
-                    over "Cannon"
-                    {
-                        over "CannonRoot"
-                        {
-                            over "ScratchedMetallicPaint"
-                            {
-                                color3f inputs:Basecolor_Tint = (0.66982037, 0.12284724, 0.013632257) (
-                                    colorSpace = "srgb_displayp3"
-                                )
-                            }
-                        }
-                    }
-
-                    over "Body"
-                    {
-                        over "BodyPaint"
-                        {
-                            color3f inputs:Basecolor_Tint = (0.37254903, 0.36862746, 0.32941177) (
-                                colorSpace = "srgb_displayp3"
-                            )
-                        }
-                    }
-
-                    over "WheelsRight"
-                    {
-                        over "ScratchedMetallicPaint"
-                        {
-                            color3f inputs:Basecolor_Tint = (0.42352942, 0.05490196, 0.019607844) (
-                                colorSpace = "srgb_displayp3"
-                            )
-                        }
-                    }
-
-                    over "WheelsLeft"
-                    {
-                        over "ScratchedMetallicPaint"
-                        {
-                            color3f inputs:Basecolor_Tint = (0.42352942, 0.05490196, 0.019607844) (
-                                colorSpace = "srgb_displayp3"
-                            )
-                        }
-                    }
-                }
-            }
         }
 
         def Xform "DirectionalLight_1" (
@@ -564,6 +458,55 @@ def Xform "Root"
                 def RealityKitStruct "Shadow"
                 {
                 }
+            }
+        }
+
+        def "FullSpaceTerrain" (
+            active = true
+            customData = {
+                float3 rotationEulerHint = (-1.5707964, 0, 0)
+            }
+            references = @Models/Other/FullSpaceTerrain.usdc@
+        )
+        {
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
+            float3 xformOp:scale = (0.9999998, 0.9999998, 0.9999998)
+            float3 xformOp:translate = (0, -0.1, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Terrain"
+            {
+                over "Plane_002" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </Root/EnvironmentRoot/TerrainMaterial> (
+                        bindMaterialAs = "weakerThanDescendants"
+                    )
+                }
+            }
+        }
+
+        def Material "TerrainMaterial"
+        {
+            token outputs:mtlx:surface
+            token outputs:realitykit:vertex
+            token outputs:surface.connect = </Root/EnvironmentRoot/TerrainMaterial/UsdPreviewSurface.outputs:surface>
+            float2 ui:nodegraph:node:pos = (20, 20)
+            int ui:nodegraph:node:stackingOrder = 1
+            float2 ui:nodegraph:realitykit:subgraphOutputs:pos = (0, 109.5)
+            float2 ui:nodegraph:realitykit:subgraphOutputs:size = (181.5, 99)
+
+            def Shader "UsdPreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.39342645, 0.32246384, 0.14596617) (
+                    colorSpace = "srgb_displayp3"
+                )
+                float inputs:roughness = 1
+                token outputs:surface
             }
         }
     }
