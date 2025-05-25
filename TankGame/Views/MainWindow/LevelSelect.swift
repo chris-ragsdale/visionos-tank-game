@@ -14,15 +14,38 @@ struct LevelSelect: View {
     
     var body: some View {
         // Level List
-        VStack {
-            levelButton(appModel.levels[0])
-                .padding(.bottom, 15)
+        HStack(spacing: 50) {
             
-            HStack {
-                ForEach(appModel.levels) { level in
-                    if level != appModel.levels[0] {
-                        levelButton(level)
-                    }
+            // Tutorial
+            levelButton(level: appModel.levels[0])
+            
+            Divider()
+                .frame(height: 125)
+            
+            VStack {
+                HStack {
+                    levelButton(
+                        level: appModel.levels[1],
+                        disabled: appModel.levels[0].completionState != .completed
+                    )
+                    levelButton(
+                        level: appModel.levels[2],
+                        disabled: appModel.levels[1].completionState != .completed
+                    )
+                    levelButton(
+                        level: appModel.levels[3],
+                        disabled: appModel.levels[2].completionState != .completed
+                    )
+                }
+                HStack {
+                    levelButton(
+                        level: appModel.levels[4],
+                        disabled: appModel.levels[3].completionState != .completed
+                    )
+                    levelButton(
+                        level: appModel.levels[5],
+                        disabled: appModel.levels[4].completionState != .completed
+                    )
                 }
             }
         }
@@ -30,10 +53,12 @@ struct LevelSelect: View {
     }
     
     @ViewBuilder
-    func levelButton(_ level: Level) -> some View {
+    func levelButton(level: Level, disabled: Bool = false) -> some View {
         let icon: some View = level.completionState.icon
         VStack {
             ToggleLevelButton(level: level)
+                .disabled(disabled)
+            
             icon
                 .offset(y: -15)
                 .offset(z: 10)
