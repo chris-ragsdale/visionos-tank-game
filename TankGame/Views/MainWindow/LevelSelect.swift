@@ -17,39 +17,32 @@ struct LevelSelect: View {
         HStack(spacing: 50) {
             
             // Tutorial
-            levelButton(level: appModel.levels[0])
+            levelButton(levelIdx: 0)
             
             Divider()
                 .frame(height: 125)
             
             VStack {
                 HStack {
-                    levelButton(
-                        level: appModel.levels[1],
-                        disabled: appModel.levels[0].completionState != .completed
-                    )
-                    levelButton(
-                        level: appModel.levels[2],
-                        disabled: appModel.levels[1].completionState != .completed
-                    )
-                    levelButton(
-                        level: appModel.levels[3],
-                        disabled: appModel.levels[2].completionState != .completed
-                    )
+                    levelButton(levelIdx: 1)
+                    levelButton(levelIdx: 2)
+                    levelButton(levelIdx: 3)
                 }
                 HStack {
-                    levelButton(
-                        level: appModel.levels[4],
-                        disabled: appModel.levels[3].completionState != .completed
-                    )
-                    levelButton(
-                        level: appModel.levels[5],
-                        disabled: appModel.levels[4].completionState != .completed
-                    )
+                    levelButton(levelIdx: 4)
+                    levelButton(levelIdx: 5)
                 }
             }
         }
         .padding(.top, 25)
+    }
+    
+    @ViewBuilder
+    func levelButton(levelIdx: Int) -> some View {
+        levelButton(
+            level: appModel.levels[levelIdx],
+            disabled: levelIdx > 0 ? appModel.levels[levelIdx-1].completionState != .completed : false
+        )
     }
     
     @ViewBuilder
