@@ -19,8 +19,8 @@ struct ToggleLevelButton: View {
     
     var body: some View {
         if appModel.immersiveSpaceState == .open {
-            // Pause Level Button
-            Button("Pause", action: {
+            // Exit Level Button
+            Button("Exit", action: {
                 appModel.setSelectedLevel(nil)
                 dismissWindow(id: appModel.tankControlsPanelID)
                 toggleImmersiveSpace()

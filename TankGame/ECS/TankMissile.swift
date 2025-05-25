@@ -10,7 +10,7 @@ import Foundation
 
 struct TankMissileComponent: Component {
     let id: UUID = UUID()
-    let velocityMps: Float = 2.5
+    let velocityMps: Float = 3.5//2.5
     let commandId: TankCommand.ID
     var target: Target
     var firstUpdate: Bool = true

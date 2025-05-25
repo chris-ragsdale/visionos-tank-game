@@ -41,6 +41,6 @@ enum CompletionState {
 }
 
 enum WinCondition: Equatable {
-    case enemiesKilled(Bool)
+    case enemyKilled(Int, Bool)
     case tankMoved(Bool)
 }

@@ -15,19 +15,8 @@
     "objectMetadataList" : [
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
-        "EnvironmentRoot",
-        "Playfield",
-        "Tank",
-        "TankRoot"
+        "EnvironmentRoot"
       ],
       {
         "isExpanded" : true,
@@ -46,6 +35,14 @@
       },
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
         "EnvironmentRoot",
         "Playfield",
@@ -58,7 +55,10 @@
       [
         "1F3CE647-37F1-4E64-A2A2-854FEF6792EE",
         "Root",
-        "EnvironmentRoot"
+        "EnvironmentRoot",
+        "Playfield",
+        "Tank",
+        "TankRoot"
       ],
       {
         "isExpanded" : true,
@@ -68,6 +68,17 @@
   },
   "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB" : {
     "objectMetadataList" : [
+      [
+        "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB",
+        "Root",
+        "TankRoot",
+        "Cannon",
+        "ScratchedMetallicPaint"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB",
         "Root",
@@ -86,22 +97,23 @@
       {
         "isExpanded" : true,
         "isLocked" : false
-      },
-      [
-        "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB",
-        "Root",
-        "TankRoot",
-        "Cannon",
-        "ScratchedMetallicPaint"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
       }
     ]
   },
   "4D828FA9-98CC-4053-B6B2-1164F031D690" : {
     "objectMetadataList" : [
+      [
+        "4D828FA9-98CC-4053-B6B2-1164F031D690",
+        "GardenRoot",
+        "ContentRoot",
+        "Environment",
+        "FullSpaceTerrain",
+        "Terrain"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "4D828FA9-98CC-4053-B6B2-1164F031D690",
         "GardenRoot"
@@ -123,30 +135,18 @@
         "4D828FA9-98CC-4053-B6B2-1164F031D690",
         "GardenRoot",
         "ContentRoot",
-        "Environment"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4D828FA9-98CC-4053-B6B2-1164F031D690",
-        "GardenRoot",
-        "ContentRoot",
-        "Environment",
-        "FullSpaceTerrain",
-        "Terrain"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4D828FA9-98CC-4053-B6B2-1164F031D690",
-        "GardenRoot",
-        "ContentRoot",
         "Environment",
         "FullSpaceTerrain"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4D828FA9-98CC-4053-B6B2-1164F031D690",
+        "GardenRoot",
+        "ContentRoot",
+        "Environment"
       ],
       {
         "isExpanded" : true,
@@ -156,16 +156,6 @@
   },
   "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851" : {
     "objectMetadataList" : [
-      [
-        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
-        "Root",
-        "TankRoot",
-        "Body"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
       [
         "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
         "Root"
@@ -179,15 +169,6 @@
         "Root",
         "TankRoot",
         "WheelsLeft"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
-        "Root",
-        "TankRoot"
       ],
       {
         "isExpanded" : true,
@@ -212,6 +193,25 @@
       {
         "isExpanded" : true,
         "isLocked" : false
+      },
+      [
+        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
+        "Root",
+        "TankRoot",
+        "Body"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4DA1F27D-3DDE-4C5E-A470-E549F1A1E851",
+        "Root",
+        "TankRoot"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
       }
     ]
   },
@@ -219,8 +219,7 @@
     "objectMetadataList" : [
       [
         "520FD1A3-C759-49FA-9060-810855911CE7",
-        "Root",
-        "Missile"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -228,7 +227,8 @@
       },
       [
         "520FD1A3-C759-49FA-9060-810855911CE7",
-        "Root"
+        "Root",
+        "Missile"
       ],
       {
         "isExpanded" : true,
@@ -253,6 +253,15 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
+        "Platform"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
         "Video_Dock",
         "Ground",
         "Material"
@@ -264,37 +273,8 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
-        "SkyDome"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "Platform"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "Video_Dock"
-      ],
-      {
-        "disallowsFraming" : false,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
         "Tank",
-        "WheelsRight",
+        "Wheels",
         "Wheel"
       ],
       {
@@ -314,6 +294,26 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
+        "Video_Dock",
+        "Ground"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
         "Platform",
         "Cylinder"
       ],
@@ -324,22 +324,11 @@
       [
         "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
         "Root",
-        "Tank",
-        "Wheels",
-        "Wheel"
+        "Video_Dock"
       ],
       {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
-        "Root",
-        "Video_Dock",
-        "Ground"
-      ],
-      {
-        "isExpanded" : true,
+        "disallowsFraming" : false,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [
@@ -358,6 +347,17 @@
       ],
       {
         "disallowsFraming" : false,
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "C6A7F375-BFE9-46E0-9EA6-1A6B150F43FD",
+        "Root",
+        "Tank",
+        "WheelsRight",
+        "Wheel"
+      ],
+      {
         "isExpanded" : true,
         "isLocked" : false
       }

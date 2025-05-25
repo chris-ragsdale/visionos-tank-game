@@ -16,42 +16,25 @@ struct LevelView: View {
     }
     
     var body: some View {
-        switch levelID {
-        case 0:
-            tutorialLevel()
-        default:
-            EmptyView()
+        Group {
+            switch levelID {
+            case 0:
+                Tutorial(level: level)
+            case 1:
+                Level1(level: level)
+            case 2:
+                Level2(level: level)
+            case 3:
+                Level3(level: level)
+            case 4:
+                Level4(level: level)
+            case 5:
+                Level5(level: level)
+            default:
+                EmptyView()
+            }
         }
-    }
-}
-
-extension LevelView {
-    @ViewBuilder
-    func tutorialLevel() -> some View {
-        VStack {
-            
-            Spacer()
-            
-            Text(level.description)
-            
-            Spacer()
-        }
-        .navigationTitle("Tutorial")
-    }
-    
-    @ViewBuilder
-    func level1() -> some View {
-        VStack {
-//            Text(level.name)
-//                .font(.title)
-            
-            Spacer()
-            
-            Text(level.description)
-            
-            Spacer()
-        }
-        .navigationTitle(level.name)
+        .toolbar(.hidden)
     }
 }
 
