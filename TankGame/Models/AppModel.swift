@@ -49,88 +49,68 @@ import RealityKit
             - Move the tank forward
             - shoot the enemy tank
             """,
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 0, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 0, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .tankMoved(false),
-                .enemyKilled(0, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         ),
         Level(
             id: 1,
             name: "Level 1",
             description: "Welcome to level 1",
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 0, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 0, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .enemyKilled(0, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         ),
         Level(
             id: 2,
             name: "Level 2",
             description: "Welcome to level 2",
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 3, y: 0.145, z: -4),
-                .init(x: -3, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 3, y: 0.145, z: -4)),
+                (UUID(), .init(x: -3, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .enemyKilled(0, false),
-                .enemyKilled(1, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         ),
         Level(
             id: 3,
             name: "Level 3",
             description: "Welcome to level 3",
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 0, y: 0.145, z: -4),
-                .init(x: 3, y: 0.145, z: -4),
-                .init(x: -3, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 0, y: 0.145, z: -4)),
+                (UUID(), .init(x: 3, y: 0.145, z: -4)),
+                (UUID(), .init(x: -3, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .enemyKilled(0, false),
-                .enemyKilled(1, false),
-                .enemyKilled(2, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         ),
         Level(
             id: 4,
             name: "Level 4",
             description: "Welcome to level 4",
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 0, y: 0.145, z: -4),
-                .init(x: 3, y: 0.145, z: -4),
-                .init(x: -3, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 0, y: 0.145, z: -4)),
+                (UUID(), .init(x: 3, y: 0.145, z: -4)),
+                (UUID(), .init(x: -3, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .enemyKilled(0, false),
-                .enemyKilled(1, false),
-                .enemyKilled(2, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         ),
         Level(
             id: 5,
             name: "Level 5",
             description: "Welcome to level 5",
-            playerStart: .init(x: 0, y: 0.145, z: 4),
-            enemyStarts: [
-                .init(x: 0, y: 0.145, z: -4),
-                .init(x: 3, y: 0.145, z: -4),
-                .init(x: -3, y: 0.145, z: -4)
+            player: .init(x: 0, y: 0.145, z: 4),
+            enemies: [
+                (UUID(), .init(x: 0, y: 0.145, z: -4)),
+                (UUID(), .init(x: 3, y: 0.145, z: -4)),
+                (UUID(), .init(x: -3, y: 0.145, z: -4))
             ],
-            winConditions: [
-                .enemyKilled(0, false),
-                .enemyKilled(1, false),
-                .enemyKilled(2, false)
-            ]
+            winConditions: [ .enemiesKilled ]
         )
     ]
 }

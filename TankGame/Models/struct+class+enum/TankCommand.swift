@@ -13,6 +13,7 @@ struct TankCommand: Equatable {
     typealias ID = UUID
     
     let id: ID = UUID()
+    let tankId: UUID?
     let commandType: TankCommandType
     let target: Target
 }
@@ -23,8 +24,15 @@ struct Target: Equatable {
     let posPlayfield: SIMD3<Float>
     let posCannonParent: SIMD3<Float>
     
-    init(_ tapEvent: EntityTargetValue<DragGesture.Value>, _ tank: Tank?) {
-        posPlayfield = tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.root.parent!)
-        posCannonParent = tapEvent.convert(tapEvent.location3D, from: .local, to: tank!.cannon.parent!)
+    // Build target for player
+    init(_ playerTank: Tank, _ tapEvent: EntityTargetValue<DragGesture.Value>) {
+        posPlayfield = tapEvent.convert(tapEvent.location3D, from: .local, to: playerTank.root.parent!)
+        posCannonParent = tapEvent.convert(tapEvent.location3D, from: .local, to: playerTank.cannon.parent!)
+    }
+    
+    // Build target for enemy
+    init(_ enemyTank: Tank, _ playerTank: Tank) {
+        self.posPlayfield = playerTank.root.position
+        posCannonParent = playerTank.root.position(relativeTo: enemyTank.cannon.parent)
     }
 }

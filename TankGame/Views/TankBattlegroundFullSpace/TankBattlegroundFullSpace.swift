@@ -21,6 +21,7 @@ struct TankBattlegroundFullSpace: View {
         TankMovementSystem.registerSystem()
         TankMissileSystem.registerSystem()
         ExplosionSystem.registerSystem()
+        AISystem.registerSystem()
     }
 
     var body: some View {
@@ -43,7 +44,7 @@ struct TankBattlegroundFullSpace: View {
                     guard !dragging else { return }
                     dragging = true
                     
-                    gameModel.targetTappedPosition(event)
+                    gameModel.commandPlayer(event)
                 }
                 .onEnded { event in
                     dragging = false

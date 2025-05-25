@@ -39,17 +39,17 @@ typealias Entities = (
         self.level = level
         
         // Build player
-        playerTank = buildTank(level.playerStart)
+        playerTank = buildTank(.player, level.player)
         
         // Build enemies
         enemyTanks = []
-        for enemyTankPosition in level.enemyStarts {
-            guard let enemy = buildTank(enemyTankPosition) else { continue }
+        for (enemyId, enemyPosition) in level.enemies {
+            guard let enemy = buildTank(.enemy, enemyPosition, enemyId) else { continue }
             enemyTanks.append(enemy)
         }
     }
     
-    private func buildTank(_ position: SIMD3<Float>) -> Tank? {
+    private func buildTank(_ tankType: TankType, _ position: SIMD3<Float>, _ id: UUID? = nil) -> Tank? {
         guard let tankTemplate, let missileTemplate else {
             print("Failed to build tank, entity templates not yet available")
             return nil
@@ -57,7 +57,7 @@ typealias Entities = (
         
         let tankEntity = tankTemplate.clone(recursive: true).children[0]
         tankEntity.position = position
-        return Tank(tankEntity, missileTemplate)
+        return Tank(id, tankType, tankEntity, missileTemplate)
     }
     
     func initCollisionSubs(_ content: RealityViewContent) {
@@ -114,11 +114,23 @@ typealias Entities = (
     // Commands
     
     var selectedCommand: TankCommandType = .move
-    var tankCommands: [TankCommand] = [] {
+    var playerTankCommands: [TankCommand] = [] {
         didSet {
             // Issue command to tank on add
-            guard let nextCommand = tankCommands.last else { return }
+            guard let nextCommand = playerTankCommands.last else { return }
             if let newMissile = playerTank?.handleNextCommand(nextCommand) {
+                addMissileEntity(newMissile)
+            }
+        }
+    }
+    var enemyTankCommands: [TankCommand] = [] {
+        didSet {
+            // Issue command to tank on add
+            guard let nextCommand = enemyTankCommands.last else { return }
+            // Find associated enemy tank
+            let enemyTank = enemyTanks.first(where: { $0.id == nextCommand.tankId })
+            // Issue command to tank
+            if let newMissile = enemyTank?.handleNextCommand(nextCommand) {
                 addMissileEntity(newMissile)
             }
         }
@@ -175,8 +187,10 @@ typealias Entities = (
 // MARK: - GameModel + Tank Commands
 extension GameModel {
     
-    /// Capture target position values from gesture and issue command
-    func targetTappedPosition(_ tapEvent: EntityTargetValue<DragGesture.Value>) {
+    /// Issue selected player command using position values from tap gesture
+    func commandPlayer(_ tapEvent: EntityTargetValue<DragGesture.Value>) {
+        guard let playerTank else { return }
+        
         // Skip if shooting and all missiles are already in play
         if selectedCommand == .shoot,
            missileTargetEntities.count >= maxMissiles {
@@ -184,16 +198,26 @@ extension GameModel {
         }
         
         // Issue command and visualize target
-        let target = Target(tapEvent, playerTank)
-        let command = TankCommand(commandType: selectedCommand, target: target)
-        tankCommands.append(command)
-        addTargetEntity(target, command.id)
+        let target = Target(playerTank, tapEvent)
+        let command = TankCommand(tankId: playerTank.id, commandType: selectedCommand, target: target)
+        playerTankCommands.append(command)
+        addTargetEntity(target, command)//command.id, selectedCommand)
+    }
+    
+    /// Issue enemy "shoot" command
+    func commandEnemyShoot(_ enemyTankId: UUID, _ playerTank: Tank) {
+        guard let enemyTank = enemyTanks.first(where: { $0.id == enemyTankId }) else { return }
+        
+        let target = Target(enemyTank, playerTank)
+        let command = TankCommand(tankId: enemyTankId, commandType: .shoot, target: target)
+        enemyTankCommands.append(command)
+        addTargetEntity(target, command)//command.id, .shoot)
     }
     
     /// Build and add target entity to visualize where the tank/missile is aiming
-    private func addTargetEntity(_ target: Target, _ id: TankCommand.ID) {
+    private func addTargetEntity(_ target: Target, _ command: TankCommand) {
         // Build target entity
-        let targetEntityColor: UIColor = selectedCommand == .move ? .white : .red
+        let targetEntityColor: UIColor = command.commandType == .move ? .white : .red
         let targetEntity = ModelEntity(
             mesh: .generateSphere(radius: 0.1),
             materials: [UnlitMaterial(color: targetEntityColor)]
@@ -201,9 +225,9 @@ extension GameModel {
         targetEntity.setPosition(target.posPlayfield, relativeTo: nil)
         
         // Add to scene
-        switch selectedCommand {
+        switch command.commandType {
         case .move:  setMoveTargetEntity(targetEntity)
-        case .shoot: addMissileTargetEntity(id, targetEntity)
+        case .shoot: addMissileTargetEntity(command.id, targetEntity)
         }
         playfield.addChild(targetEntity)
     }

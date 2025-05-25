@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct Level: Identifiable, Equatable {
+struct Level: Identifiable {
     typealias ID = Int
     
     let id: ID
     let name: String
     let description: LocalizedStringKey
-    let playerStart: SIMD3<Float>
-    let enemyStarts: [SIMD3<Float>]
+    let player: SIMD3<Float>
+    let enemies: [(UUID, SIMD3<Float>)]
     var winConditions: [WinCondition]
     var completionState: CompletionState = .notStarted
 }
@@ -41,6 +41,5 @@ enum CompletionState {
 }
 
 enum WinCondition: Equatable {
-    case enemyKilled(Int, Bool)
-    case tankMoved(Bool)
+    case enemiesKilled
 }

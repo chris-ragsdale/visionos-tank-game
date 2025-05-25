@@ -18,8 +18,13 @@ struct Health {
     var isAlive: Bool { current > 0 }
 }
 
+enum TankType {
+    case player, enemy
+}
+
 @Observable class Tank: Identifiable {
-    let id = UUID()
+    let id: UUID
+    let tankType: TankType
     var health = Health(capacity: 5, current: 5)
     
     // Entities
@@ -28,9 +33,18 @@ struct Health {
     let cannonShaft: Entity
     let missileTemplate: Entity
     
-    init(_ root: Entity, _ missileTemplate: Entity) {
+    init(_ id: UUID? = nil, _ tankType: TankType, _ root: Entity, _ missileTemplate: Entity) {
+        self.id = id ?? UUID()
+        self.tankType = tankType
+        
         self.root = root
         Collisions.shared.configureTankCollisions(self.root)
+        
+        // Add enemy AI
+        if tankType == .enemy, let id {
+            let enemyAI = AIComponent(tankId: id)
+            root.components.set(enemyAI)
+        }
     
         cannon = root.findEntity(named: "Cannon")!
         cannonShaft = cannon.findEntity(named: "Shaft")!
