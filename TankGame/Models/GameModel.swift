@@ -65,6 +65,13 @@ typealias Entities = (
         if let playerTank {
             let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: playerTank.root) { event in
                 print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
+                
+                // Handle missile collision
+                guard let missile = event.entityB.components[TankMissileComponent.self],
+                      missile.shooterId != playerTank.id
+                else { return }
+                
+                self.handleMissileHit(missile, playerTank)
             }
             collisionSubscriptions.append(playerTankSub)
         }
@@ -75,7 +82,10 @@ typealias Entities = (
                 print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
                 
                 // Handle missile collision
-                guard let missile = event.entityB.components[TankMissileComponent.self] else { return }
+                guard let missile = event.entityB.components[TankMissileComponent.self],
+                      missile.shooterId != enemyTank.id
+                else { return }
+                
                 self.handleMissileHit(missile, enemyTank)
             }
             collisionSubscriptions.append(enemyTankSub)

@@ -125,7 +125,7 @@ extension Tank {
         )
         
         // Add to system
-        missile.components[TankMissileComponent.self] = TankMissileComponent(commandId: command.id, target: command.target)
+        missile.components[TankMissileComponent.self] = TankMissileComponent(commandId: command.id, target: command.target, shooterId: self.id)
         return missile
     }
 }

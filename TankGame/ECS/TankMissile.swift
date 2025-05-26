@@ -14,6 +14,7 @@ struct TankMissileComponent: Component {
     let commandId: TankCommand.ID
     var target: Target
     var firstUpdate: Bool = true
+    let shooterId: UUID
 }
 
 class TankMissileSystem: System {
