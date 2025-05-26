@@ -51,10 +51,9 @@ struct TankControlsPanel: View {
                     HStack {
                         Text("\(Image(systemName: "dot.scope"))")
                         
-                        let activeMissiles = gameModel.missileTargetEntities.count
                         ForEach(0..<3) { missileNum in
                             Image(systemName: "rectangle.portrait.fill")
-                                .foregroundStyle(missileNum < activeMissiles ? .gray : .red)
+                                .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
                         }
                         
                         Text("\(Image(systemName: "dot.scope"))")

@@ -121,6 +121,10 @@ typealias Entities = (
     var playerTank: Tank?
     var enemyTanks: [Tank] = []
     
+    func enemyTank(_ id: UUID) -> Tank? {
+        enemyTanks.first { $0.id == id }
+    }
+    
     // Commands
     
     var selectedCommand: TankCommandType = .move
@@ -188,6 +192,16 @@ typealias Entities = (
         return missileEntity
     }
     
+    var playerActiveMissiles: Int {
+        missileEntities.count { (_, missileEntity) in
+            // per missile, determine if missile was shot from player
+            guard let missile = missileEntity.components[TankMissileComponent.self]
+            else { return false }
+            
+            return missile.shooterId == playerTank?.id
+        }
+    }
+    
     // Podium
     
     var podiumBehavior: PodiumBehavior = .floatMid
@@ -202,8 +216,7 @@ extension GameModel {
         guard let playerTank else { return }
         
         // Skip if shooting and all missiles are already in play
-        if selectedCommand == .shoot,
-           missileTargetEntities.count >= maxMissiles {
+        if selectedCommand == .shoot && playerActiveMissiles >= 3 {
             return
         }
         
@@ -221,7 +234,17 @@ extension GameModel {
         let target = Target(enemyTank, playerTank)
         let command = TankCommand(tankId: enemyTankId, commandType: .shoot, target: target)
         enemyTankCommands.append(command)
-        addTargetEntity(target, command)//command.id, .shoot)
+        addTargetEntity(target, command)
+    }
+    
+    /// Issue enemy "move" command
+    func commandEnemyMove(_ enemyTankId: UUID, _ playerTank: Tank) {
+        guard let enemyTank = enemyTanks.first(where: { $0.id == enemyTankId }) else { return }
+        
+        let target = Target(enemyTank, playerTank)
+        let command = TankCommand(tankId: enemyTankId, commandType: .move, target: target)
+        enemyTankCommands.append(command)
+        addTargetEntity(target, command)
     }
     
     /// Build and add target entity to visualize where the tank/missile is aiming
