@@ -87,7 +87,10 @@ extension Tank {
         root.look(at: command.target.posPlayfield, from: root.position, relativeTo: root.parent)
         
         // Move to target
-        root.components[TankMovementComponent.self] = TankMovementComponent(target: command.target)
+        root.components[TankMovementComponent.self] = TankMovementComponent(
+            velocityMps: tankType == .player ? 1.5: 0.5,
+            target: command.target
+        )
     }
     
     /// Point cannon at target, add missile and start moving missile

@@ -141,9 +141,10 @@ typealias Entities = (
         didSet {
             // Issue command to tank on add
             guard let nextCommand = enemyTankCommands.last else { return }
+            
             // Find associated enemy tank
             let enemyTank = enemyTanks.first(where: { $0.id == nextCommand.tankId })
-            // Issue command to tank
+            // Issue command
             if let newMissile = enemyTank?.handleNextCommand(nextCommand) {
                 addMissileEntity(newMissile)
             }
@@ -227,22 +228,12 @@ extension GameModel {
         addTargetEntity(target, command)//command.id, selectedCommand)
     }
     
-    /// Issue enemy "shoot" command
-    func commandEnemyShoot(_ enemyTankId: UUID, _ playerTank: Tank) {
+    /// Issue enemy command using player localtion
+    func commandEnemy(_ commandType: TankCommandType, _ enemyTankId: UUID, _ playerTank: Tank) {
         guard let enemyTank = enemyTanks.first(where: { $0.id == enemyTankId }) else { return }
         
         let target = Target(enemyTank, playerTank)
-        let command = TankCommand(tankId: enemyTankId, commandType: .shoot, target: target)
-        enemyTankCommands.append(command)
-        addTargetEntity(target, command)
-    }
-    
-    /// Issue enemy "move" command
-    func commandEnemyMove(_ enemyTankId: UUID, _ playerTank: Tank) {
-        guard let enemyTank = enemyTanks.first(where: { $0.id == enemyTankId }) else { return }
-        
-        let target = Target(enemyTank, playerTank)
-        let command = TankCommand(tankId: enemyTankId, commandType: .move, target: target)
+        let command = TankCommand(tankId: enemyTankId, commandType: commandType, target: target)
         enemyTankCommands.append(command)
         addTargetEntity(target, command)
     }

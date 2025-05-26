@@ -8,7 +8,7 @@
 import RealityKit
 
 struct TankMovementComponent: Component {
-    let velocityMps: Float = 1.5
+    let velocityMps: Float
     var target: Target
     var firstUpdate: Bool = true
 }

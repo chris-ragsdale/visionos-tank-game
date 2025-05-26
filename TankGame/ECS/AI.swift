@@ -18,7 +18,7 @@ struct AIComponent: Component {
     
     // Move
     var moveCooldown: TimeInterval = 0
-    var moveInterval: TimeInterval = 1.0
+    var moveInterval: TimeInterval = 2.0
     var moveRange: Float = 2.5
 }
 
@@ -45,16 +45,16 @@ class AISystem: System {
             let distanceAIPlayer = distance(aiEntity.position, playerTank.root.position)
             
             // Move towards player if outside ideal range and cooldown is ready
-            let playerOutsideIdealRange = distanceAIPlayer <= ai.moveRange
+            let playerOutsideIdealRange = distanceAIPlayer >= ai.moveRange
             if playerOutsideIdealRange && ai.moveCooldown <= 0 {
-                GameModel.shared.commandEnemyMove(ai.tankId, playerTank)
+                GameModel.shared.commandEnemy(.move, ai.tankId, playerTank)
                 ai.moveCooldown = ai.moveInterval
             }
             
             // Shoot at player if within range and cooldown is ready
             let playerInShootingRange = distanceAIPlayer <= ai.shootRange
             if playerInShootingRange && ai.shootCooldown <= 0 {
-                GameModel.shared.commandEnemyShoot(ai.tankId, playerTank)
+                GameModel.shared.commandEnemy(.shoot, ai.tankId, playerTank)
                 ai.shootCooldown = ai.shootInterval
             }
             
