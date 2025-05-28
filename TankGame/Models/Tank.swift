@@ -33,21 +33,40 @@ enum TankType {
     let cannonShaft: Entity
     let missileTemplate: Entity
     
-    init(_ id: UUID? = nil, _ tankType: TankType, _ root: Entity, _ missileTemplate: Entity) {
+    init(_ id: UUID? = nil, _ tankType: TankType, _ root: Entity, _ missileTemplate: Entity, _ tankMaterials: TankMaterials) {
         self.id = id ?? UUID()
         self.tankType = tankType
         
+        // Configure root
         self.root = root
         Collisions.shared.configureTankCollisions(self.root)
-        
-        // Add enemy AI
-        if tankType == .enemy, let id {
-            let enemyAI = AIComponent(tankId: id)
-            root.components.set(enemyAI)
-        }
     
         cannon = root.findEntity(named: "Cannon")!
         cannonShaft = cannon.findEntity(named: "Shaft")!
+        
+        if tankType == .enemy, let id {
+            // Add enemy AI
+            let enemyAI = AIComponent(tankId: id)
+            root.components.set(enemyAI)
+            
+            // Assign enemy materials
+            if let cannonShaft = cannonShaft as? ModelEntity,
+               let cannonBase = cannon.findEntity(named: "Base") as? ModelEntity,
+               let cannonEnd = cannon.findEntity(named: "End") as? ModelEntity {
+                cannonShaft.model?.materials = [tankMaterials.cannonPaintEnemy]
+                cannonBase.model?.materials = [tankMaterials.cannonPaintEnemy]
+                cannonEnd.model?.materials = [tankMaterials.cannonPaintEnemy]
+            }
+            if let cannonBody = root.findEntity(named: "Body")?.findEntity(named: "Body") as? ModelEntity {
+                cannonBody.model?.materials = [tankMaterials.bodyPaintEnemy]
+            }
+            if let roadwheelLeft = root.findEntity(named: "WheelsLeft")?.findEntity(named: "Roadwheel") as? ModelEntity,
+               let roadwheelRight = root.findEntity(named: "WheelsRight")?.findEntity(named: "Roadwheel") as? ModelEntity {
+                roadwheelLeft.model?.materials = [tankMaterials.roadwheelPaintEnemy]
+                roadwheelRight.model?.materials = [tankMaterials.roadwheelPaintEnemy]
+            }
+        }
+        
         self.missileTemplate = missileTemplate
     }
 }

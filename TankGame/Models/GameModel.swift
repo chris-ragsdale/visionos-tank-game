@@ -19,14 +19,49 @@ typealias Entities = (
     explosionEmitterEntity: Entity
 )
 
+typealias TankMaterials = (
+    bodyPaintEnemy: ShaderGraphMaterial,
+    cannonPaintEnemy: ShaderGraphMaterial,
+    roadwheelPaintEnemy: ShaderGraphMaterial
+)
+
 /// Maintains game state & in-flight game entities
 @Observable class GameModel {
     static let shared = GameModel()
     
     init() {
         Task {
-            self.missileTemplate = try? await Entity(named: "Missile/Missile", in: realityKitContentBundle)
-            self.tankTemplate = try? await Entity(named: "Tank/Tank", in: realityKitContentBundle)
+            // Load USDA templates
+            self.missileTemplate = try? await Entity(
+                named: "Missile/Missile",
+                in: realityKitContentBundle
+            )
+            self.tankTemplate = try? await Entity(
+                named: "Tank/Tank",
+                in: realityKitContentBundle
+            )
+            
+            // Load tank materials
+            let bodyPaintEnemy = try? await ShaderGraphMaterial(
+                named: "/Root/TankRoot/BodyPaintEnemy",
+                from: "Tank/Tank.usda",
+                in: realityKitContentBundle
+            )
+            let cannonPaintEnemy = try? await ShaderGraphMaterial(
+                named: "/Root/TankRoot/CannonPaintEnemy",
+                from: "Tank/Tank.usda",
+                in: realityKitContentBundle
+            )
+            let roadwheelPaintEnemy = try? await ShaderGraphMaterial(
+                named: "/Root/TankRoot/RoadwheelPaintEnemy",
+                from: "Tank/Tank.usda",
+                in: realityKitContentBundle
+            )
+            
+            guard let bodyPaintEnemy, let cannonPaintEnemy, let roadwheelPaintEnemy
+            else { return }
+            
+            self.tankMaterials = (bodyPaintEnemy, cannonPaintEnemy, roadwheelPaintEnemy)
         }
     }
     
@@ -50,14 +85,14 @@ typealias Entities = (
     }
     
     private func buildTank(_ tankType: TankType, _ position: SIMD3<Float>, _ id: UUID? = nil) -> Tank? {
-        guard let tankTemplate, let missileTemplate else {
+        guard let tankTemplate, let missileTemplate, let tankMaterials else {
             print("Failed to build tank, entity templates not yet available")
             return nil
         }
         
         let tankEntity = tankTemplate.clone(recursive: true).children[0]
         tankEntity.position = position
-        return Tank(id, tankType, tankEntity, missileTemplate)
+        return Tank(id, tankType, tankEntity, missileTemplate, tankMaterials)
     }
     
     func initCollisionSubs(_ content: RealityViewContent) {
@@ -118,8 +153,9 @@ typealias Entities = (
     }
     
     // Tanks
-    
+    var tankMaterials: TankMaterials?
     var tankTemplate: Entity?
+    
     var playerTank: Tank?
     var enemyTanks: [Tank] = []
     
