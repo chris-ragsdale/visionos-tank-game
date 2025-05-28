@@ -18,8 +18,8 @@ struct TankBattlegroundFullSpace: View {
     @State var dragging = false
     
     init() {
-        TankMovementSystem.registerSystem()
-        TankMissileSystem.registerSystem()
+        MovementSystem.registerSystem()
+        ProjectileSystem.registerSystem()
         ExplosionSystem.registerSystem()
         AISystem.registerSystem()
     }

@@ -67,11 +67,12 @@ typealias Entities = (
                 print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
                 
                 // Handle missile collision
-                guard let missile = event.entityB.components[TankMissileComponent.self],
+                guard let missile = event.entityB.components[ProjectileComponent.self],
                       missile.shooterId != playerTank.id
                 else { return }
                 
-                self.handleMissileHit(missile, playerTank)
+                self.hitTank(playerTank)
+                self.explodeMissile(missile)
             }
             collisionSubscriptions.append(playerTankSub)
         }
@@ -82,11 +83,12 @@ typealias Entities = (
                 print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
                 
                 // Handle missile collision
-                guard let missile = event.entityB.components[TankMissileComponent.self],
+                guard let missile = event.entityB.components[ProjectileComponent.self],
                       missile.shooterId != enemyTank.id
                 else { return }
                 
-                self.handleMissileHit(missile, enemyTank)
+                self.hitTank(enemyTank)
+                self.explodeMissile(missile)
             }
             collisionSubscriptions.append(enemyTankSub)
         }
@@ -153,11 +155,19 @@ typealias Entities = (
     
     // Move Target
     
-    var moveTargetEntity: Entity?
+    var moveTargetEntities: [UUID: Entity] = [:]
     
-    func setMoveTargetEntity(_ entity: Entity) {
-        moveTargetEntity?.removeFromParent()
-        moveTargetEntity = entity
+    func setMoveTargetEntity(_ tankId: UUID, _ entity: Entity) {
+        moveTargetEntities[tankId]?.removeFromParent()
+        moveTargetEntities[tankId] = entity
+    }
+    
+    func removeMoveTargetEntity(_ id: UUID) -> Entity? {
+        guard let moveTargetEntity = moveTargetEntities.removeValue(forKey: id)
+        else { return nil }
+        
+        moveTargetEntity.removeFromParent()
+        return moveTargetEntity
     }
     
     // Missile Targets
@@ -179,16 +189,16 @@ typealias Entities = (
     let maxMissiles = 3
     var missileTemplate: Entity?
     var explosionEmitter: ParticleEmitterComponent?
-    var missileEntities: [UUID: Entity] = [:]
+    var missileEntities: [TankCommand.ID: Entity] = [:]
     
     func addMissileEntity(_ missileEntity: Entity) {
-        guard let missile = missileEntity.components[TankMissileComponent.self] else { return }
+        guard let missile = missileEntity.components[ProjectileComponent.self] else { return }
         missileEntities[missile.id] = missileEntity
     }
     
     func removeMissileEntity(_ id: UUID) -> Entity? {
         guard let missileEntity = missileEntities.removeValue(forKey: id) else { return nil }
-        missileEntity.components.remove(TankMissileComponent.self)
+        missileEntity.components.remove(ProjectileComponent.self)
         missileEntity.removeFromParent()
         return missileEntity
     }
@@ -196,7 +206,7 @@ typealias Entities = (
     var playerActiveMissiles: Int {
         missileEntities.count { (_, missileEntity) in
             // per missile, determine if missile was shot from player
-            guard let missile = missileEntity.components[TankMissileComponent.self]
+            guard let missile = missileEntity.components[ProjectileComponent.self]
             else { return false }
             
             return missile.shooterId == playerTank?.id
@@ -209,7 +219,7 @@ typealias Entities = (
     var environmentRoot: Entity?
 }
 
-// MARK: - GameModel + Tank Commands
+// MARK: - + TankCommands
 extension GameModel {
     
     /// Issue selected player command using position values from tap gesture
@@ -250,26 +260,14 @@ extension GameModel {
         
         // Add to scene
         switch command.commandType {
-        case .move:  setMoveTargetEntity(targetEntity)
+        case .move:  setMoveTargetEntity(command.tankId, targetEntity)
         case .shoot: addMissileTargetEntity(command.id, targetEntity)
         }
         playfield.addChild(targetEntity)
     }
     
-    /// Damage tank (if present), remove missile & target entity, then create explosion
-    func handleMissileHit(_ missile: TankMissileComponent, _ hitTank: Tank? = nil) {
-        // Damage tank
-        if let hitTank {
-            hitTank.damage()
-            if !hitTank.health.isAlive {
-                let tankPosition = hitTank.root.convert(position: .zero, to: playfield)
-                addExplosion(tankPosition, scale: 3)
-                
-                hitTank.root.removeFromParent()
-            }
-        }
-        
-        // Explode missile
+    /// Remove missile & target entity, then create explosion
+    func explodeMissile(_ missile: ProjectileComponent) {
         let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: playfield)
         
         let _ = removeMissileEntity(missile.id)
@@ -277,6 +275,18 @@ extension GameModel {
         
         if let explosionPosition = hitPosition {
             addExplosion(explosionPosition)
+        }
+    }
+    
+    private func hitTank(_ tank: Tank) {
+        tank.damage()
+        if !tank.health.isAlive {
+            // explode
+            let tankPosition = tank.root.convert(position: .zero, to: playfield)
+            addExplosion(tankPosition, scale: 3)
+            
+            let _ = removeMoveTargetEntity(tank.id)
+            tank.root.removeFromParent()
         }
     }
     

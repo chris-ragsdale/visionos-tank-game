@@ -1,5 +1,5 @@
 //
-//  TankMissile.swift
+//  Projectile.swift
 //  TankGame
 //
 //  Created by Emily Elson on 3/14/25.
@@ -8,7 +8,7 @@
 import RealityKit
 import Foundation
 
-struct TankMissileComponent: Component {
+struct ProjectileComponent: Component {
     let id: UUID = UUID()
     let velocityMps: Float = 3.5//2.5
     let commandId: TankCommand.ID
@@ -17,15 +17,15 @@ struct TankMissileComponent: Component {
     let shooterId: UUID
 }
 
-class TankMissileSystem: System {
+class ProjectileSystem: System {
     required init(scene: Scene) {}
     
     func update(context: SceneUpdateContext) {
         let deltaTime = Float(context.deltaTime)
 
-        let query = EntityQuery(where: .has(TankMissileComponent.self))
+        let query = EntityQuery(where: .has(ProjectileComponent.self))
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
-            guard var missile = entity.components[TankMissileComponent.self] else { continue }
+            guard var missile = entity.components[ProjectileComponent.self] else { continue }
             
             // Skip first update - prevents shoot forward when moving after not moving for a while
             if missile.firstUpdate {
@@ -44,7 +44,7 @@ class TankMissileSystem: System {
 
             // Explode if close enough to target
             if simd_distance(newPos, target) < 0.015 {
-                GameModel.shared.handleMissileHit(missile)
+                GameModel.shared.explodeMissile(missile)
             }
         }
     }

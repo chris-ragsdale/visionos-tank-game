@@ -13,7 +13,7 @@ struct TankCommand: Equatable {
     typealias ID = UUID
     
     let id: ID = UUID()
-    let tankId: UUID?
+    let tankId: UUID
     let commandType: TankCommandType
     let target: Target
 }

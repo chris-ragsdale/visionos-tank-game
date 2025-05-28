@@ -87,7 +87,7 @@ extension Tank {
         root.look(at: command.target.posPlayfield, from: root.position, relativeTo: root.parent)
         
         // Move to target
-        root.components[TankMovementComponent.self] = TankMovementComponent(
+        root.components[MovementComponent.self] = MovementComponent(
             velocityMps: tankType == .player ? 1.5: 0.5,
             target: command.target
         )
@@ -128,7 +128,11 @@ extension Tank {
         )
         
         // Add to system
-        missile.components[TankMissileComponent.self] = TankMissileComponent(commandId: command.id, target: command.target, shooterId: self.id)
+        missile.components[ProjectileComponent.self] = ProjectileComponent(
+            commandId: command.id,
+            target: command.target,
+            shooterId: self.id
+        )
         return missile
     }
 }
