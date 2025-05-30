@@ -51,7 +51,8 @@ struct TankGameApp: App {
                 .environment(gameModel)
                 .frame(
                     minWidth: 400, maxWidth: 400,
-                    minHeight: 300, maxHeight: 300
+                    minHeight: 800, maxHeight: 800
+//                    minHeight: 300, maxHeight: 300
                 )
         }
         .windowStyle(.plain)

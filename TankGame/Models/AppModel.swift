@@ -113,4 +113,17 @@ import RealityKit
             winConditions: [ .enemiesKilled ]
         )
     ]
+    
+    func startLevel(_ id: Level.ID) {
+        guard let levelIdx = levels.firstIndex(where: { $0.id == id })
+        else { return }
+        
+        let completionState = levels[levelIdx].completionState
+        switch completionState {
+        case .inProgress, .completed:
+            return
+        case .notStarted:
+            levels[levelIdx].completionState = .inProgress
+        }
+    }
 }

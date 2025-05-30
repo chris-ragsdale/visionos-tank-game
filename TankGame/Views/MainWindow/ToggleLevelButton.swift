@@ -43,7 +43,12 @@ struct ToggleLevelButton: View {
     }
     
     func loadLevel(_ id: Level.ID) {
-        let level = appModel.levels[id]
+        guard let levelIdx = appModel.levels.firstIndex(where: { $0.id == id })
+        else { return }
+        
+        appModel.startLevel(id)
+        
+        let level = appModel.levels[levelIdx]
         gameModel.loadLevel(level)
     }
 }

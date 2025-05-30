@@ -15,6 +15,12 @@ struct TankControlsPanel: View {
     var body: some View {
         @Bindable var gameModel = gameModel
         VStack {
+//            if let levelID = appModel.navPath.last {
+//                LevelView(levelID: levelID)
+//                    .padding()
+//                    .glassBackgroundEffect()
+//            }
+            
             // Podium Controls
             VStack {
                 Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
