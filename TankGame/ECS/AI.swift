@@ -23,11 +23,14 @@ struct AIComponent: Component {
 }
 
 class AISystem: System {
+    static var isPaused: Bool = false
     private let query = EntityQuery(where: .has(AIComponent.self))
         
     required init(scene: Scene) {}
     
     func update(context: SceneUpdateContext) {
+        guard !Self.isPaused else { return }
+        
         let deltaTime = context.deltaTime
         
         guard let playerTank = GameModel.shared.playerTank

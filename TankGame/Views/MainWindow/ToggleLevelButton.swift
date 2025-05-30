@@ -20,17 +20,20 @@ struct ToggleLevelButton: View {
     var body: some View {
         if appModel.immersiveSpaceState == .open {
             // Exit Level Button
-            Button("Exit", action: {
+            Button("Exit", systemImage: "xmark", action: {
                 appModel.setSelectedLevel(nil)
                 dismissWindow(id: appModel.tankControlsPanelID)
                 toggleImmersiveSpace()
             })
+            .background(.red)
+            .glassBackgroundEffect()
         } else {
             // Play Level Button
             NavigationLink(value: level.id, label: {
                 Button(level.name, action: {
                     appModel.setSelectedLevel(level.id)
                     loadLevel(level.id)
+                    gameModel.toggleSystemsPaused(paused: true)
                     openWindow(id: appModel.tankControlsPanelID)
                     toggleImmersiveSpace()
                 })

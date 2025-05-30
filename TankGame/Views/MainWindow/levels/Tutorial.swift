@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Tutorial: View {
+    @Environment(GameModel.self) private var gameModel
     var level: Level
     
     var body: some View {
@@ -23,7 +24,10 @@ struct Tutorial: View {
             
             Spacer()
             
-            ToggleLevelButton(level: level)
+            HStack(spacing: 50) {
+                TogglePlayStateButton()
+                ToggleLevelButton(level: level)
+            }
             
             Spacer()
         }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LevelView: View {
     @Environment(AppModel.self) var appModel
+    @Environment(GameModel.self) var gameModel
     
     var levelID: Level.ID
     var level: Level {

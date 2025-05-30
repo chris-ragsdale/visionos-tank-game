@@ -65,6 +65,35 @@ typealias TankMaterials = (
         }
     }
     
+    // Play State
+    
+    enum PlayState {
+        case ready, playing, paused
+    }
+    
+    var playState: PlayState = .ready
+    
+    func setPlayState(_ state: PlayState) {
+        switch state {
+        case .ready:
+            toggleSystemsPaused(paused: true)
+            playState = .ready
+        case .playing:
+            toggleSystemsPaused(paused: false)
+            playState = .playing
+        case .paused:
+            toggleSystemsPaused(paused: true)
+            playState = .paused
+        }
+    }
+    
+    func toggleSystemsPaused(paused: Bool?) {
+        AISystem.isPaused = paused ?? !AISystem.isPaused
+        ExplosionSystem.isPaused = paused ?? !ExplosionSystem.isPaused
+        MovementSystem.isPaused = paused ?? !MovementSystem.isPaused
+        ProjectileSystem.isPaused = paused ?? !ProjectileSystem.isPaused
+    }
+    
     // Level
     
     var level: Level?
@@ -72,6 +101,7 @@ typealias TankMaterials = (
     
     func loadLevel(_ level: Level) {
         self.level = level
+        playState = .ready
         
         // Build player
         playerTank = buildTank(.player, level.player)

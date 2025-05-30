@@ -18,12 +18,16 @@ struct ProjectileComponent: Component {
 }
 
 class ProjectileSystem: System {
+    static var isPaused: Bool = false
+    private let query = EntityQuery(where: .has(ProjectileComponent.self))
+    
     required init(scene: Scene) {}
     
     func update(context: SceneUpdateContext) {
+        guard !Self.isPaused else { return }
+        
         let deltaTime = Float(context.deltaTime)
-
-        let query = EntityQuery(where: .has(ProjectileComponent.self))
+        
         for entity in context.entities(matching: query, updatingSystemWhen: .rendering) {
             guard var missile = entity.components[ProjectileComponent.self] else { continue }
             
