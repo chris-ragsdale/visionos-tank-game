@@ -44,10 +44,6 @@ import RealityKit
             **Welcome to Tank Game**
             
             This is the tutorial level.
-            
-            Perform the following 2 actions to complete the tutorial: 
-            - Move the tank forward
-            - shoot the enemy tank
             """,
             player: .init(x: 0, y: 0.145, z: 4),
             enemies: [

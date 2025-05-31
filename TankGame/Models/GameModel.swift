@@ -26,7 +26,8 @@ typealias TankMaterials = (
 )
 
 /// Maintains game state & in-flight game entities
-@Observable class GameModel {
+@Observable
+class GameModel {
     static let shared = GameModel()
     
     init() {
