@@ -1,5 +1,5 @@
 {
-  "advancedEditorSelectedIdentifier" : "ShaderGraphEditorPluginID",
+  "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
     "TankBattleground.usda",
     "Tank\/Tank.usda"
@@ -240,6 +240,28 @@
     ],
     "4AFAB56E-38D4-4E2B-A791-05DBDD13D5EB" : [
       {
+        "date" : 770104333.491916,
+        "title" : "Untitled",
+        "transform" : [
+          0.82774746,
+          -1.367425e-06,
+          0.5611008,
+          0,
+          0.3266673,
+          0.8130538,
+          -0.48190463,
+          0,
+          -0.45620435,
+          0.58218837,
+          0.67300385,
+          0,
+          -0.9398706,
+          1.2057474,
+          1.0453892,
+          1
+        ]
+      },
+      {
         "date" : 770104284.226788,
         "title" : "Untitled",
         "transform" : [
@@ -434,28 +456,6 @@
           -0.23599233,
           0.6176322,
           -1.0260761,
-          1
-        ]
-      },
-      {
-        "date" : 770103940.667559,
-        "title" : "Untitled",
-        "transform" : [
-          -0.106422044,
-          -1.3403965e-06,
-          -0.99432105,
-          0,
-          -0.20417447,
-          0.9786907,
-          0.02185151,
-          0,
-          0.9731326,
-          0.2053405,
-          -0.104154676,
-          0,
-          3.226498,
-          0.055192836,
-          0.040254116,
           1
         ]
       }

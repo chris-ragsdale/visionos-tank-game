@@ -70,6 +70,8 @@ class GameModel {
     
     enum PlayState {
         case ready, playing, paused
+        
+        var notPlaying: Bool { self != .playing }
     }
     
     var playState: PlayState = .ready

@@ -22,14 +22,31 @@ struct TogglePlayStateButton: View {
     
     var body: some View {
         let (name, icon, color) = buttonConfig
-        Button(name, systemImage: icon) {
-            switch gameModel.playState {
-            case .ready: gameModel.setPlayState(.playing)
-            case .playing: gameModel.setPlayState(.paused)
-            case .paused: gameModel.setPlayState(.playing)
+        switch gameModel.playState {
+        case .playing:
+            Button {
+                gameModel.setPlayState(.paused)
+            } label: {
+                Image(systemName: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(.black)
+                    .frame(width: 25, height: 25)
             }
+            .buttonStyle(.plain)
+            .frame(width: 75, height: 60)
+            .background(color)
+            .glassBackgroundEffect()
+        default:
+            Button(name, systemImage: icon) {
+                switch gameModel.playState {
+                case .ready: gameModel.setPlayState(.playing)
+                case .playing: gameModel.setPlayState(.paused)
+                case .paused: gameModel.setPlayState(.playing)
+                }
+            }
+            .background(color)
+            .glassBackgroundEffect()
         }
-        .background(color)
-        .glassBackgroundEffect()
     }
 }

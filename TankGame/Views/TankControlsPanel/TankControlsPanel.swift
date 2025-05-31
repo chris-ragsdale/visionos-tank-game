@@ -13,9 +13,27 @@ struct TankControlsPanel: View {
     @Environment(GameModel.self) var gameModel
     
     var body: some View {
-        @Bindable var gameModel = gameModel
-        HStack {
-            if let levelID = appModel.navPath.last {
+        ZStack {
+            VStack {
+                Spacer()
+                
+                podiumControls()
+                    .padding(.bottom, 7.5)
+                
+                tankControls()
+                    .padding(.bottom, 7.5)
+                
+                VStack {
+                    TogglePlayStateButton()
+                }
+                .frame(width: 100, height: 75)
+                .padding()
+                .glassBackgroundEffect()
+            }
+            
+            if gameModel.playState.notPlaying,
+                let levelID = appModel.navPath.last {
+                
                 VStack {
                     Spacer()
                     
@@ -24,59 +42,6 @@ struct TankControlsPanel: View {
                         .padding()
                         .glassBackgroundEffect()
                 }
-            }
-            
-            VStack {
-                Spacer()
-                
-                // Podium Controls
-                VStack {
-                    Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
-                    Picker("Podium Behavior", selection: $gameModel.podiumBehavior) {
-                        Text("low").tag(PodiumBehavior.floatLow)
-                        Text("mid").tag(PodiumBehavior.floatMid)
-                        Text("high").tag(PodiumBehavior.floatHigh)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: 300)
-                }
-                .onChange(of: gameModel.podiumBehavior) { oldBehavior, newBehavior in
-                    gameModel.updatePodiumBehavior(newBehavior)
-                }
-                .padding()
-                .glassBackgroundEffect()
-                .padding(.bottom, 7.5)
-                
-                // Tank Controls
-                VStack {
-                    Text("\(Image(systemName: "target")) Tank Command")
-                    Picker("Tank Command", selection: $gameModel.selectedCommand) {
-                        Text("move").tag(TankCommandType.move)
-                        Text("shoot").tag(TankCommandType.shoot)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: 300)
-                    
-                    Spacer()
-                    
-                    // Missiles
-                    VStack {
-                        HStack {
-                            Text("\(Image(systemName: "dot.scope"))")
-                            
-                            ForEach(0..<3) { missileNum in
-                                Image(systemName: "rectangle.portrait.fill")
-                                    .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
-                            }
-                            
-                            Text("\(Image(systemName: "dot.scope"))")
-                        }
-                        .padding(.top, 2)
-                    }
-                }
-                .frame(height: 125)
-                .padding()
-                .glassBackgroundEffect()
             }
         }
         .padding()
@@ -87,5 +52,59 @@ struct TankControlsPanel: View {
             default: break
             }
         }
+    }
+    
+    @ViewBuilder
+    func podiumControls() -> some View {
+        @Bindable var gameModel = gameModel
+        VStack {
+            Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
+            Picker("Podium Behavior", selection: $gameModel.podiumBehavior) {
+                Text("low").tag(PodiumBehavior.floatLow)
+                Text("mid").tag(PodiumBehavior.floatMid)
+                Text("high").tag(PodiumBehavior.floatHigh)
+            }
+            .pickerStyle(.palette)
+            .frame(width: 200, height: 50)
+        }
+        .onChange(of: gameModel.podiumBehavior) { oldBehavior, newBehavior in
+            gameModel.updatePodiumBehavior(newBehavior)
+        }
+        .padding()
+        .glassBackgroundEffect()
+    }
+    
+    @ViewBuilder
+    func tankControls() -> some View {
+        @Bindable var gameModel = gameModel
+        VStack {
+            Text("\(Image(systemName: "target")) Tank Command")
+            Picker("Tank Command", selection: $gameModel.selectedCommand) {
+                Text("move").tag(TankCommandType.move)
+                Text("shoot").tag(TankCommandType.shoot)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 300)
+            
+            Spacer()
+            
+            // Missiles
+            VStack {
+                HStack {
+                    Text("\(Image(systemName: "dot.scope"))")
+                    
+                    ForEach(0..<3) { missileNum in
+                        Image(systemName: "rectangle.portrait.fill")
+                            .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
+                    }
+                    
+                    Text("\(Image(systemName: "dot.scope"))")
+                }
+                .padding(.top, 2)
+            }
+        }
+        .frame(height: 125)
+        .padding()
+        .glassBackgroundEffect()
     }
 }
