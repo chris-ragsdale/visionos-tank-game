@@ -1,8 +1,7 @@
 {
   "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
-    "TankBattleground.usda",
-    "Tank\/Tank.usda"
+
   ],
   "recentIdentifiers" : {
     "1F3CE647-37F1-4E64-A2A2-854FEF6792EE" : [
@@ -577,6 +576,5 @@
   },
   "sceneViewportBackgroundColors" : {
 
-  },
-  "selectedSceneRelativePath" : "Tank\/Tank.usda"
+  }
 }

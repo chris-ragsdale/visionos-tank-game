@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import RealityKit
+import RealityKitContent
 
 struct TankControlsPanel: View {
     @Environment(\.scenePhase) var scenePhase
@@ -94,8 +96,17 @@ struct TankControlsPanel: View {
                     Text("\(Image(systemName: "dot.scope"))")
                     
                     ForEach(0..<3) { missileNum in
-                        Image(systemName: "rectangle.portrait.fill")
-                            .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
+//                        Image(systemName: "rectangle.portrait.fill")
+//                            .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
+                        
+                        Model3D(named: "Missile/Rocket", bundle: realityKitContentBundle) { model in
+                            model
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                        } placeholder: {
+                            ProgressView()
+                        }
                     }
                     
                     Text("\(Image(systemName: "dot.scope"))")
