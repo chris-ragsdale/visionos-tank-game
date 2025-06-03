@@ -69,7 +69,7 @@ class GameModel {
     // Play State
     
     enum PlayState {
-        case ready, playing, paused
+        case ready, playing, paused, won
         
         var notPlaying: Bool { self != .playing }
     }
@@ -87,6 +87,9 @@ class GameModel {
         case .paused:
             toggleSystemsPaused(paused: true)
             playState = .paused
+        case .won:
+            toggleSystemsPaused(paused: true)
+            playState = .won
         }
     }
     
