@@ -40,7 +40,7 @@ struct TankControlsPanel: View {
                     Spacer()
                     
                     LevelView(levelID: levelID)
-                        .frame(width: 300, height: 250)
+                        .frame(width: 300, height: 275)
                         .padding()
                         .glassBackgroundEffect()
                 }
@@ -61,6 +61,8 @@ struct TankControlsPanel: View {
         @Bindable var gameModel = gameModel
         VStack {
             Text("\(Image(systemName: "square.2.layers.3d.top.filled")) Podium")
+                .font(.title3)
+                .padding(.bottom, 5)
             Picker("Podium Behavior", selection: $gameModel.podiumBehavior) {
                 Text("low").tag(PodiumBehavior.floatLow)
                 Text("mid").tag(PodiumBehavior.floatMid)
@@ -81,6 +83,8 @@ struct TankControlsPanel: View {
         @Bindable var gameModel = gameModel
         VStack {
             Text("\(Image(systemName: "target")) Tank Command")
+                .font(.title3)
+                .padding(.bottom, 5)
             Picker("Tank Command", selection: $gameModel.selectedCommand) {
                 Text("move").tag(TankCommandType.move)
                 Text("shoot").tag(TankCommandType.shoot)
@@ -90,32 +94,31 @@ struct TankControlsPanel: View {
             
             Spacer()
             
-            // Missiles
-            VStack {
-                HStack {
-                    Text("\(Image(systemName: "dot.scope"))")
-                    
-                    ForEach(0..<3) { missileNum in
-//                        Image(systemName: "rectangle.portrait.fill")
-//                            .foregroundStyle(missileNum < gameModel.playerActiveMissiles ? .gray : .red)
-                        
-                        Model3D(named: "Missile/Rocket", bundle: realityKitContentBundle) { model in
-                            model
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 30, height: 30)
-                        } placeholder: {
-                            ProgressView()
-                        }
-                    }
-                    
-                    Text("\(Image(systemName: "dot.scope"))")
-                }
-                .padding(.top, 2)
+            HStack {
+                missileCell(2)
+                missileCell(1)
+                missileCell(0)
             }
+            .padding(.bottom, 2)
         }
-        .frame(height: 125)
+        .frame(height: 150)
         .padding()
         .glassBackgroundEffect()
+    }
+    
+    @ViewBuilder
+    func missileCell(_ missileNum: Int) -> some View {
+        VStack {
+            Model3D(named: "Missile/Rocket", bundle: realityKitContentBundle) { model in
+                model
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 25, height: 50)
+            } placeholder: {
+                ProgressView()
+            }
+            .opacity(missileNum > gameModel.playerActiveMissiles-1 ? 1 : 0)
+        }
+        .frame(width: 30, height: 55)
     }
 }
