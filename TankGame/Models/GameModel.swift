@@ -25,6 +25,12 @@ typealias TankMaterials = (
     roadwheelPaintEnemy: ShaderGraphMaterial
 )
 
+enum PlayState {
+    case ready, playing, paused, won
+    
+    var notPlaying: Bool { self != .playing }
+}
+
 /// Maintains game state & in-flight game entities
 @Observable
 class GameModel {
@@ -67,12 +73,6 @@ class GameModel {
     }
     
     // Play State
-    
-    enum PlayState {
-        case ready, playing, paused, won
-        
-        var notPlaying: Bool { self != .playing }
-    }
     
     var playState: PlayState = .ready
     

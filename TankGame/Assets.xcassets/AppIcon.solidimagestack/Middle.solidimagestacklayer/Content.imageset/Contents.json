@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "MidLayer.png",
       "idiom" : "vision",
       "scale" : "2x"
     }
