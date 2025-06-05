@@ -64,7 +64,7 @@ extension TankBattlegroundFullSpace {
     func initBattleground(_ content: RealityViewContent, _ attachments: RealityViewAttachments) async {
         // Init entities
         guard let entities = await loadEntities() else { return }
-        gameModel.initBattlegroundEntities(entities)
+        gameModel.entityManager.setupBattlegroundEntities(entities)
         content.add(gameModel.entityManager.battlegroundBase)
         
         // Configure attachments and collisions
@@ -72,7 +72,7 @@ extension TankBattlegroundFullSpace {
         gameModel.initCollisionSubs(content)
     }
     
-    private func loadEntities() async -> Entities? {
+    private func loadEntities() async -> BattlegroundEntities? {
         // Load USDAs
         guard let battlegroundBase = try? await Entity(named: "TankBattleground", in: realityKitContentBundle) else {
             print("Failed to load USDAs")

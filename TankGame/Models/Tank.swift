@@ -22,7 +22,10 @@ enum TankType {
     case player, enemy
 }
 
-@Observable class Tank: Identifiable {
+@Observable
+class Tank: Identifiable {
+    static let maxMissiles = 3
+    
     let id: UUID
     let tankType: TankType
     var health = Health(capacity: 5, current: 5)

@@ -72,7 +72,7 @@ struct TankControlsPanel: View {
             .frame(width: 200, height: 50)
         }
         .onChange(of: gameModel.podiumBehavior) { oldBehavior, newBehavior in
-            gameModel.updatePodiumBehavior(newBehavior)
+            gameModel.handlePodiumBehaviorChange(newBehavior)
         }
         .padding()
         .glassBackgroundEffect()
@@ -117,7 +117,7 @@ struct TankControlsPanel: View {
             } placeholder: {
                 ProgressView()
             }
-            .opacity(missileNum > gameModel.playerActiveMissiles-1 ? 1 : 0)
+            .opacity(missileNum > gameModel.entityManager.playerActiveMissiles-1 ? 1 : 0)
         }
         .frame(width: 30, height: 55)
     }
