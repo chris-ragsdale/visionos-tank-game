@@ -29,9 +29,9 @@ struct TankBattlegroundFullSpace: View {
             await initBattleground(content, attachments)
         } attachments: {
             Attachment(id: "PlayerTankHealth") {
-                TankHealth(health: gameModel.playerTank?.health)
+                TankHealth(health: gameModel.entityManager.playerTank?.health)
             }
-            ForEach(gameModel.enemyTanks) { enemyTank in
+            ForEach(gameModel.entityManager.enemyTanks) { enemyTank in
                 Attachment(id: "EnemyTankHealth-\(enemyTank.id)") {
                     TankHealth(health: enemyTank.health)
                 }
@@ -96,9 +96,9 @@ extension TankBattlegroundFullSpace {
     }
     
     func configureAttachments(_ content: RealityViewContent, _ attachments: RealityViewAttachments) {
-        if let playerTank = gameModel.playerTank {
+        if let playerTank = gameModel.entityManager.playerTank {
             attachTankHealth("PlayerTankHealth", playerTank, attachments)
-            for enemyTank in gameModel.enemyTanks {
+            for enemyTank in gameModel.entityManager.enemyTanks {
                 attachTankHealth("EnemyTankHealth-\(enemyTank.id)", enemyTank, attachments)
             }
         }

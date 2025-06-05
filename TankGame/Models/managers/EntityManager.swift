@@ -17,7 +17,12 @@ typealias TankMaterials = (
 
 @Observable
 class EntityManager {
+    var playerTank: Tank?
+    var enemyTanks: [Tank] = []
     
+    func enemyTank(_ id: UUID) -> Tank? {
+        enemyTanks.first { $0.id == id }
+    }
     
     // Templates
     var missileTemplate: Entity?

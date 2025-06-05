@@ -81,13 +81,13 @@ class GameModel {
         playState = .ready
         
         // Build player
-        playerTank = entityManager.buildTank(.player, level.player)
+        entityManager.playerTank = entityManager.buildTank(.player, level.player)
         
         // Build enemies
-        enemyTanks = []
+        entityManager.enemyTanks = []
         for (enemyId, enemyPosition) in level.enemies {
             guard let enemy = entityManager.buildTank(.enemy, enemyPosition, enemyId) else { continue }
-            enemyTanks.append(enemy)
+            entityManager.enemyTanks.append(enemy)
         }
     }
     
@@ -97,7 +97,7 @@ class GameModel {
     
     func initCollisionSubs(_ content: RealityViewContent) {
         // Player collisions
-        if let playerTank {
+        if let playerTank = entityManager.playerTank {
             let playerTankSub = content.subscribe(to: CollisionEvents.Began.self, on: playerTank.root) { event in
                 print("Collision Detected, Player Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
                 
@@ -113,7 +113,7 @@ class GameModel {
         }
         
         // Enemy collisions
-        for enemyTank in enemyTanks {
+        for enemyTank in entityManager.enemyTanks {
             let enemyTankSub = content.subscribe(to: CollisionEvents.Began.self, on: enemyTank.root) { event in
                 print("Collision Detected, Enemy Tank Hit! (A: \(event.entityA.name) -> B: \(event.entityB.name))")
                 
@@ -141,22 +141,22 @@ class GameModel {
         entityManager.battlegroundBase = battlegroundBase
         
         // Add tanks to playfield
-        if let playerTank {
+        if let playerTank = entityManager.playerTank {
             entityManager.playfield.addChild(playerTank.root)
-            for enemyTank in enemyTanks {
+            for enemyTank in entityManager.enemyTanks {
                 entityManager.playfield.addChild(enemyTank.root)
             }
         }
     }
     
-    // Tanks
-
-    var playerTank: Tank?
-    var enemyTanks: [Tank] = []
-    
-    func enemyTank(_ id: UUID) -> Tank? {
-        enemyTanks.first { $0.id == id }
-    }
+//    // Tanks
+//
+//    var playerTank: Tank?
+//    var enemyTanks: [Tank] = []
+//    
+//    func enemyTank(_ id: UUID) -> Tank? {
+//        enemyTanks.first { $0.id == id }
+//    }
     
     // Commands
     
@@ -165,7 +165,7 @@ class GameModel {
         didSet {
             // Issue command to tank on add
             guard let nextCommand = playerTankCommands.last else { return }
-            if let newMissile = playerTank?.handleNextCommand(nextCommand) {
+            if let newMissile = entityManager.playerTank?.handleNextCommand(nextCommand) {
                 addMissileEntity(newMissile)
             }
         }
@@ -176,7 +176,7 @@ class GameModel {
             guard let nextCommand = enemyTankCommands.last else { return }
             
             // Find associated enemy tank
-            let enemyTank = enemyTanks.first(where: { $0.id == nextCommand.tankId })
+            let enemyTank = entityManager.enemyTanks.first(where: { $0.id == nextCommand.tankId })
             // Issue command
             if let newMissile = enemyTank?.handleNextCommand(nextCommand) {
                 addMissileEntity(newMissile)
@@ -239,7 +239,7 @@ class GameModel {
             guard let missile = missileEntity.components[ProjectileComponent.self]
             else { return false }
             
-            return missile.shooterId == playerTank?.id
+            return missile.shooterId == entityManager.playerTank?.id
         }
     }
     
@@ -253,7 +253,8 @@ extension GameModel {
     
     /// Issue selected player command using position values from tap gesture
     func commandPlayer(_ tapEvent: EntityTargetValue<DragGesture.Value>) {
-        guard let playerTank else { return }
+        guard let playerTank = entityManager.playerTank
+        else { return }
         
         // Skip if shooting and all missiles are already in play
         if selectedCommand == .shoot && playerActiveMissiles >= 3 {
@@ -269,7 +270,8 @@ extension GameModel {
     
     /// Issue enemy command using player localtion
     func commandEnemy(_ commandType: TankCommandType, _ enemyTankId: UUID, _ playerTank: Tank) {
-        guard let enemyTank = enemyTanks.first(where: { $0.id == enemyTankId }) else { return }
+        guard let enemyTank = entityManager.enemyTanks.first(where: { $0.id == enemyTankId })
+        else { return }
         
         let target = Target(enemyTank, playerTank)
         let command = TankCommand(tankId: enemyTankId, commandType: commandType, target: target)

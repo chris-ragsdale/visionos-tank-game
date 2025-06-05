@@ -33,12 +33,12 @@ class AISystem: System {
         
         let deltaTime = context.deltaTime
         
-        guard let playerTank = GameModel.shared.playerTank
+        guard let playerTank = GameModel.shared.entityManager.playerTank
         else { return }
         
         for aiEntity in context.entities(matching: query, updatingSystemWhen: .rendering) {
             guard var ai = aiEntity.components[AIComponent.self],
-                  var aiTank = GameModel.shared.enemyTank(ai.tankId)
+                  var aiTank = GameModel.shared.entityManager.enemyTank(ai.tankId)
             else { continue }
             
             // Progress cooldown
