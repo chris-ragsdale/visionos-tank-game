@@ -17,7 +17,6 @@ struct TogglePlayStateButton: View {
         case .ready: ("Start", "play", .blue)
         case .playing: ("Pause", "pause", .yellow)
         case .paused: ("Play", "play", .green)
-        case .won: ("Next", "arrow.right.circle", .blue)
         }
     }
     
@@ -44,7 +43,6 @@ struct TogglePlayStateButton: View {
                 case .ready: gameModel.setPlayState(.playing)
                 case .playing: gameModel.setPlayState(.paused)
                 case .paused: gameModel.setPlayState(.playing)
-                case .won: gameModel.setPlayState(.ready)
                 }
             }
             .background(color)

@@ -19,16 +19,24 @@ typealias Entities = (
     explosionEmitterEntity: Entity
 )
 
-typealias TankMaterials = (
-    bodyPaintEnemy: ShaderGraphMaterial,
-    cannonPaintEnemy: ShaderGraphMaterial,
-    roadwheelPaintEnemy: ShaderGraphMaterial
-)
+//typealias TankMaterials = (
+//    bodyPaintEnemy: ShaderGraphMaterial,
+//    cannonPaintEnemy: ShaderGraphMaterial,
+//    roadwheelPaintEnemy: ShaderGraphMaterial
+//)
 
 enum PlayState {
-    case ready, playing, paused, won
+    case ready, playing, paused
     
     var notPlaying: Bool { self != .playing }
+}
+
+enum LevelEvent {
+    case tankKilled(UUID)
+}
+
+struct GameState {
+    
 }
 
 /// Maintains game state & in-flight game entities
@@ -36,41 +44,7 @@ enum PlayState {
 class GameModel {
     static let shared = GameModel()
     
-    init() {
-        Task {
-            // Load USDA templates
-            self.missileTemplate = try? await Entity(
-                named: "Missile/Missile",
-                in: realityKitContentBundle
-            )
-            self.tankTemplate = try? await Entity(
-                named: "Tank/Tank",
-                in: realityKitContentBundle
-            )
-            
-            // Load tank materials
-            let bodyPaintEnemy = try? await ShaderGraphMaterial(
-                named: "/Root/TankRoot/BodyPaintEnemy",
-                from: "Tank/Tank.usda",
-                in: realityKitContentBundle
-            )
-            let cannonPaintEnemy = try? await ShaderGraphMaterial(
-                named: "/Root/TankRoot/CannonPaintEnemy",
-                from: "Tank/Tank.usda",
-                in: realityKitContentBundle
-            )
-            let roadwheelPaintEnemy = try? await ShaderGraphMaterial(
-                named: "/Root/TankRoot/RoadwheelPaintEnemy",
-                from: "Tank/Tank.usda",
-                in: realityKitContentBundle
-            )
-            
-            guard let bodyPaintEnemy, let cannonPaintEnemy, let roadwheelPaintEnemy
-            else { return }
-            
-            self.tankMaterials = (bodyPaintEnemy, cannonPaintEnemy, roadwheelPaintEnemy)
-        }
-    }
+    var entityManager = EntityManager()
     
     // Play State
     
@@ -87,9 +61,6 @@ class GameModel {
         case .paused:
             toggleSystemsPaused(paused: true)
             playState = .paused
-        case .won:
-            toggleSystemsPaused(paused: true)
-            playState = .won
         }
     }
     
@@ -110,25 +81,18 @@ class GameModel {
         playState = .ready
         
         // Build player
-        playerTank = buildTank(.player, level.player)
+        playerTank = entityManager.buildTank(.player, level.player)
         
         // Build enemies
         enemyTanks = []
         for (enemyId, enemyPosition) in level.enemies {
-            guard let enemy = buildTank(.enemy, enemyPosition, enemyId) else { continue }
+            guard let enemy = entityManager.buildTank(.enemy, enemyPosition, enemyId) else { continue }
             enemyTanks.append(enemy)
         }
     }
     
-    private func buildTank(_ tankType: TankType, _ position: SIMD3<Float>, _ id: UUID? = nil) -> Tank? {
-        guard let tankTemplate, let missileTemplate, let tankMaterials else {
-            print("Failed to build tank, entity templates not yet available")
-            return nil
-        }
+    private func handleLevelEvent() {
         
-        let tankEntity = tankTemplate.clone(recursive: true).children[0]
-        tankEntity.position = position
-        return Tank(id, tankType, tankEntity, missileTemplate, tankMaterials)
     }
     
     func initCollisionSubs(_ content: RealityViewContent) {
@@ -167,31 +131,26 @@ class GameModel {
     
     // Battleground
     
-    var battlegroundBase = Entity()
-    var playfield = Entity()
-    
     func initBattlegroundEntities(_ entities: Entities) {
         // Save received entities
         let (battlegroundBase, environmentRoot, playfield, _, explosionEmitterEntity) = entities
         
-        self.environmentRoot = environmentRoot
+        entityManager.environmentRoot = environmentRoot
         self.explosionEmitter = explosionEmitterEntity.components[ParticleEmitterComponent.self]
-        self.playfield = playfield
-        self.battlegroundBase = battlegroundBase
+        entityManager.playfield = playfield
+        entityManager.battlegroundBase = battlegroundBase
         
         // Add tanks to playfield
         if let playerTank {
-            self.playfield.addChild(playerTank.root)
+            entityManager.playfield.addChild(playerTank.root)
             for enemyTank in enemyTanks {
-                self.playfield.addChild(enemyTank.root)
+                entityManager.playfield.addChild(enemyTank.root)
             }
         }
     }
     
     // Tanks
-    var tankMaterials: TankMaterials?
-    var tankTemplate: Entity?
-    
+
     var playerTank: Tank?
     var enemyTanks: [Tank] = []
     
@@ -259,7 +218,6 @@ class GameModel {
     // Missiles
     
     let maxMissiles = 3
-    var missileTemplate: Entity?
     var explosionEmitter: ParticleEmitterComponent?
     var missileEntities: [TankCommand.ID: Entity] = [:]
     
@@ -288,7 +246,6 @@ class GameModel {
     // Podium
     
     var podiumBehavior: PodiumBehavior = .floatMid
-    var environmentRoot: Entity?
 }
 
 // MARK: - + TankCommands
@@ -335,12 +292,12 @@ extension GameModel {
         case .move:  setMoveTargetEntity(command.tankId, targetEntity)
         case .shoot: addMissileTargetEntity(command.id, targetEntity)
         }
-        playfield.addChild(targetEntity)
+        entityManager.playfield.addChild(targetEntity)
     }
     
     /// Remove missile & target entity, then create explosion
     func explodeMissile(_ missile: ProjectileComponent) {
-        let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: playfield)
+        let hitPosition = missileEntities[missile.id]?.convert(position: .zero, to: entityManager.playfield)
         
         let _ = removeMissileEntity(missile.id)
         let _ = removeMissileTargetEntity(missile.commandId)
@@ -353,10 +310,13 @@ extension GameModel {
     private func hitTank(_ tank: Tank) {
         tank.damage()
         if !tank.health.isAlive {
+            // notify death
+            
             // explode
-            let tankPosition = tank.root.convert(position: .zero, to: playfield)
+            let tankPosition = tank.root.convert(position: .zero, to: entityManager.playfield)
             addExplosion(tankPosition, scale: 3)
             
+            // clear entities
             let _ = removeMoveTargetEntity(tank.id)
             tank.root.removeFromParent()
         }
@@ -371,7 +331,7 @@ extension GameModel {
         explosionEntity.scale = .init(repeating: scale)
         explosionEntity.components[ParticleEmitterComponent.self] = explosionEmitterComponent
         explosionEntity.components[ExplosionComponent.self] = ExplosionComponent()
-        playfield.addChild(explosionEntity)
+        entityManager.playfield.addChild(explosionEntity)
         
         // remove explosion in 2s
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -385,7 +345,9 @@ extension GameModel {
     
     /// Move world relative to podium
     func updatePodiumBehavior(_ newBehavior: PodiumBehavior) {
-        guard let environmentRoot else { return }
+        guard let environmentRoot = entityManager.environmentRoot
+        else { return }
+        
         let newTransform = buildNewEnvironmentTransform(environmentRoot, newBehavior)
         environmentRoot.move(to: newTransform, relativeTo: environmentRoot.parent, duration: 1)
     }

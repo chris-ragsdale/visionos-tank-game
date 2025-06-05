@@ -65,7 +65,7 @@ extension TankBattlegroundFullSpace {
         // Init entities
         guard let entities = await loadEntities() else { return }
         gameModel.initBattlegroundEntities(entities)
-        content.add(gameModel.battlegroundBase)
+        content.add(gameModel.entityManager.battlegroundBase)
         
         // Configure attachments and collisions
         configureAttachments(content, attachments)
