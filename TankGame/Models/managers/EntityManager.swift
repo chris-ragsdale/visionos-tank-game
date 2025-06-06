@@ -19,7 +19,7 @@ typealias TankMaterials = (
 class EntityManager {
     // Tanks
     var playerTank: Tank?
-    var enemyTanks: [Tank] = []
+    var enemyTanks: [Tank.ID: Tank] = [:]
     
     // Missiles
     var missileEntities: [TankCommand.ID: Entity] = [:]
@@ -47,8 +47,20 @@ class EntityManager {
 // MARK: - Tanks
 
 extension EntityManager {
-    func enemyTank(_ id: UUID) -> Tank? {
-        enemyTanks.first { $0.id == id }
+    func enemyTank(_ id: Tank.ID) -> Tank? {
+        enemyTanks[id]
+    }
+    
+    func loadTanks(from level: Level) {
+        // Build player
+        playerTank = buildTank(.player, level.player)
+        
+        // Build enemies
+        enemyTanks = [:]
+        for (enemyId, enemyPosition) in level.enemies {
+            guard let enemyTank = buildTank(.enemy, enemyPosition, enemyId) else { continue }
+            enemyTanks[enemyTank.id] = enemyTank
+        }
     }
     
     func buildTank(_ tankType: TankType, _ position: SIMD3<Float>, _ id: UUID? = nil) -> Tank? {
@@ -92,10 +104,36 @@ extension EntityManager {
 // MARK: - Targets
 
 extension EntityManager {
+    // Adds
+    
+    /// Build and add target entity to visualize where the tank/missile is aiming
+    func addTargetEntity(_ target: Target, _ command: TankCommand) {
+        // Build target entity
+        let targetEntityColor: UIColor = command.commandType == .move ? .white : .red
+        let targetEntity = ModelEntity(
+            mesh: .generateSphere(radius: 0.1),
+            materials: [UnlitMaterial(color: targetEntityColor)]
+        )
+        targetEntity.setPosition(target.posPlayfield, relativeTo: nil)
+        
+        // Add to scene
+        switch command.commandType {
+        case .move:  setMoveTargetEntity(command.tankId, targetEntity)
+        case .shoot: addMissileTargetEntity(command.id, targetEntity)
+        }
+        playfield.addChild(targetEntity)
+    }
+    
     func setMoveTargetEntity(_ tankId: UUID, _ entity: Entity) {
         moveTargetEntities[tankId]?.removeFromParent()
         moveTargetEntities[tankId] = entity
     }
+    
+    func addMissileTargetEntity(_ id: TankCommand.ID, _ entity: Entity) {
+        missileTargetEntities[id] = entity
+    }
+    
+    // Removes
     
     func removeMoveTargetEntity(_ id: UUID) -> Entity? {
         guard let moveTargetEntity = moveTargetEntities.removeValue(forKey: id)
@@ -103,10 +141,6 @@ extension EntityManager {
         
         moveTargetEntity.removeFromParent()
         return moveTargetEntity
-    }
-    
-    func addMissileTargetEntity(_ id: TankCommand.ID, _ entity: Entity) {
-        missileTargetEntities[id] = entity
     }
     
     func removeMissileTargetEntity(_ id: TankCommand.ID) -> Entity? {
@@ -140,7 +174,7 @@ extension EntityManager {
         if let playerTank {
             playfield.addChild(playerTank.root)
         }
-        for enemyTank in enemyTanks {
+        for enemyTank in enemyTanks.values {
             playfield.addChild(enemyTank.root)
         }
     }
@@ -160,7 +194,7 @@ extension EntityManager {
     }
 }
 
-// MARK: - Assets
+// MARK: - Template Assets
 
 extension EntityManager {
     func loadAssets() {

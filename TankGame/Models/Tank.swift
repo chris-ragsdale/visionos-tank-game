@@ -26,7 +26,9 @@ enum TankType {
 class Tank: Identifiable {
     static let maxMissiles = 3
     
-    let id: UUID
+    typealias ID = UUID
+    let id: ID
+    
     let tankType: TankType
     var health = Health(capacity: 5, current: 5)
     
@@ -92,7 +94,7 @@ extension Tank {
 // MARK: - Tank + Commands
 
 extension Tank {
-    func handleNextCommand(_ command: TankCommand) -> Entity? {
+    func handleCommand(_ command: TankCommand) -> Entity? {
         switch command.commandType {
         case .move:
             move(command)
